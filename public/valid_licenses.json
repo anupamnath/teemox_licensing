@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-24T10:36:33.559927+00:00",
+  "updated_at": "2026-05-24T11:24:10.190806+00:00",
   "schema_version": 1,
   "TEEMOX_MAILER": {
     "valid": [
@@ -9,7 +9,8 @@
   },
   "INFOMANIAK_API": {
     "valid": [
-      "9368f68beb9f436ab16a7abedde1e47b"
+      "9368f68beb9f436ab16a7abedde1e47b",
+      "1ffe14287ec04e459fcc97c83147f542"
     ],
     "revoked": []
   },
