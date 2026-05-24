@@ -36,11 +36,13 @@ APP_NAME     = "TEEMOX_MAILER"   # TEEMOX_MAILER | INFOMANIAK_API | SHOPIFY_API
 APP_DIR_NAME = "TeemoxMailer"    # %APPDATA% subdirectory name
 
 GITHUB_OWNER = "anupamnath"
-GITHUB_REPO  = "teemox-licensing"
+GITHUB_REPO  = "teemox_licensing"
 
 # Ed25519 public key — patched in by scripts/setup_keypair.py
 PUBLIC_KEY_PEM = """
-REPLACE_WITH_PUBLIC_KEY_AFTER_RUNNING_setup_keypair.py
+-----BEGIN PUBLIC KEY-----
+MCowBQYDK2VwAyEAGIDY1XRAic/aQGxuMirvnX6M0g67xRheQG0M1R8v+rc=
+-----END PUBLIC KEY-----
 """
 
 # ── Internal constants ─────────────────────────────────────────────────────────

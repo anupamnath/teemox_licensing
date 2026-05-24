@@ -9,7 +9,7 @@
 
 // ── Config (edit to match your repo) ─────────────────────────────────────────
 const OWNER = "anupamnath";
-const REPO  = "teemox-licensing";
+const REPO  = "teemox_licensing";
 const BRANCH = "main";
 
 const APP_LABELS = {
