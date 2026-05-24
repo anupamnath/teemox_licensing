@@ -144,6 +144,33 @@ function initGenerateTab() {
   toggleLicenseType();
 }
 
+// ── Expiry date/time helpers ──────────────────────────────────────────────────
+
+function toggleNever() {
+  const isNever = document.getElementById("genNever").checked;
+  document.getElementById("genExpiryDate").disabled = isNever;
+  document.getElementById("genExpiryTime").disabled = isNever;
+  document.getElementById("quickDates").style.display = isNever ? "none" : "flex";
+  if (!isNever && !document.getElementById("genExpiryDate").value) {
+    setQuickDate(365); // default to 1 year when unchecking
+  }
+}
+
+function setQuickDate(days) {
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  const yyyy = d.getFullYear();
+  const mm   = String(d.getMonth() + 1).padStart(2, "0");
+  const dd   = String(d.getDate()).padStart(2, "0");
+  document.getElementById("genExpiryDate").value = `${yyyy}-${mm}-${dd}`;
+  document.getElementById("genNever").checked = false;
+  document.getElementById("genExpiryDate").disabled = false;
+  document.getElementById("genExpiryTime").disabled = false;
+  document.getElementById("quickDates").style.display = "flex";
+}
+
+// ── License type toggle ───────────────────────────────────────────────────────
+
 function toggleLicenseType() {
   const type     = document.getElementById("licenseType").value;
   const mSection = document.getElementById("machineSection");
@@ -176,7 +203,9 @@ async function submitGenerate(e) {
 
   const app     = document.getElementById("genApp").value;
   const display = document.getElementById("genCustomer").value.trim();
-  const expiry  = document.getElementById("genExpiry").value.trim() || "never";
+  const isNever  = document.getElementById("genNever").checked;
+  const expDate   = document.getElementById("genExpiryDate").value;
+  const expiry    = isNever ? "never" : (expDate || "never");
   const type    = document.getElementById("licenseType").value;
   const maxMach = document.getElementById("genMaxMachines").value;
   const syncInt = document.getElementById("genSyncInterval").value || "90";
