@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-24T10:19:19.383304+00:00",
+  "updated_at": "2026-05-24T10:36:33.559927+00:00",
   "schema_version": 1,
   "TEEMOX_MAILER": {
     "valid": [
@@ -8,7 +8,9 @@
     "revoked": []
   },
   "INFOMANIAK_API": {
-    "valid": [],
+    "valid": [
+      "9368f68beb9f436ab16a7abedde1e47b"
+    ],
     "revoked": []
   },
   "SHOPIFY_API": {
