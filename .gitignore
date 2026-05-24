@@ -1,2 +1,8 @@
 # Teemox License Server — private key (NEVER COMMIT)
 private_key.pem
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+.env
