@@ -94,9 +94,17 @@
       <div id="tab-generate" class="tab-pane">
         <div class="page-title">Generate License</div>
 
-        <div class="card">
+        <div class="card gen-card">
+          <div class="gen-card-header">
+            <span class="hdr-icon">🔑</span>
+            <div>
+              <h2>Generate License Key</h2>
+              <p>Fill in the details to generate a signed license via GitHub Actions.</p>
+            </div>
+          </div>
           <form onsubmit="submitGenerate(event)">
             <div class="form-grid">
+              <div class="form-section-label">👤 Customer Info</div>
               <div class="form-group">
                 <label for="genApp">Application *</label>
                 <select id="genApp">
@@ -111,31 +119,42 @@
                 <input type="text" id="genCustomer" placeholder="Acme Corp" />
               </div>
 
+              <div class="form-section-label">⏱️ License Validity</div>
+
               <div class="form-group full">
-                <label>Expiry Date &amp; Time</label>
-                <div class="datetime-row">
-                  <div class="datetime-field">
-                    <span class="dt-icon">&#128197;</span>
-                    <input type="date" id="genExpiryDate" disabled />
-                  </div>
-                  <div class="datetime-field">
-                    <span class="dt-icon">&#128336;</span>
-                    <input type="time" id="genExpiryTime" value="23:59" disabled />
-                  </div>
-                  <label class="never-toggle">
+                <label>Expiry</label>
+                <div class="expiry-toggle-row">
+                  <label class="toggle-switch" title="Toggle lifetime / set expiry date">
                     <input type="checkbox" id="genNever" checked onchange="toggleNever()" />
-                    <span>Never (Lifetime)</span>
+                    <span class="toggle-track"></span>
                   </label>
+                  <div class="expiry-toggle-text">
+                    <strong id="expiryToggleLabel">Lifetime License</strong>
+                    <span class="form-hint">License never expires — toggle to set a date</span>
+                  </div>
                 </div>
-                <div class="quick-dates" id="quickDates" style="display:none">
-                  <button type="button" class="btn btn-ghost btn-sm" onclick="setQuickDate(30)">30 days</button>
-                  <button type="button" class="btn btn-ghost btn-sm" onclick="setQuickDate(90)">3 months</button>
-                  <button type="button" class="btn btn-ghost btn-sm" onclick="setQuickDate(180)">6 months</button>
-                  <button type="button" class="btn btn-ghost btn-sm" onclick="setQuickDate(365)">1 year</button>
-                  <button type="button" class="btn btn-ghost btn-sm" onclick="setQuickDate(730)">2 years</button>
+                <div class="expiry-picker-wrap" id="expiryPickerWrap">
+                  <div class="datetime-row">
+                    <div class="datetime-field">
+                      <span class="dt-icon">📅</span>
+                      <input type="date" id="genExpiryDate" />
+                    </div>
+                    <div class="datetime-field">
+                      <span class="dt-icon">🕐</span>
+                      <input type="time" id="genExpiryTime" value="23:59" />
+                    </div>
+                  </div>
+                  <div class="quick-dates">
+                    <button type="button" class="quick-pill" onclick="setQuickDate(30)">30 days</button>
+                    <button type="button" class="quick-pill" onclick="setQuickDate(90)">3 months</button>
+                    <button type="button" class="quick-pill" onclick="setQuickDate(180)">6 months</button>
+                    <button type="button" class="quick-pill" onclick="setQuickDate(365)">1 year</button>
+                    <button type="button" class="quick-pill" onclick="setQuickDate(730)">2 years</button>
+                  </div>
                 </div>
-                <span class="form-hint">Uncheck "Never" to set a specific expiry date and time</span>
               </div>
+
+              <div class="form-section-label">🔒 License Type</div>
 
               <div class="form-group">
                 <label for="licenseType">License Type</label>
@@ -168,6 +187,8 @@
                 <span class="form-hint">Sync with server enforces the limit</span>
               </div>
 
+              <div class="form-section-label">⚙️ Advanced Settings</div>
+
               <div class="form-group">
                 <label for="genSyncInterval">Sync Interval (minutes)</label>
                 <input type="number" id="genSyncInterval" value="90" min="30" max="1440" />
@@ -186,8 +207,9 @@
               </div>
             </div>
 
-            <div style="margin-top:1.25rem">
-              <button type="submit" class="btn btn-primary" id="genBtn">🔑 Generate License</button>
+            <div class="gen-submit-row">
+              <button type="submit" class="btn btn-primary btn-lg" id="genBtn">🔑 Generate License</button>
+              <span class="form-hint">Triggers a GitHub Actions workflow to sign and store the license.</span>
             </div>
           </form>
         </div>

@@ -148,25 +148,28 @@ function initGenerateTab() {
 
 function toggleNever() {
   const isNever = document.getElementById("genNever").checked;
-  document.getElementById("genExpiryDate").disabled = isNever;
-  document.getElementById("genExpiryTime").disabled = isNever;
-  document.getElementById("quickDates").style.display = isNever ? "none" : "flex";
-  if (!isNever && !document.getElementById("genExpiryDate").value) {
-    setQuickDate(365); // default to 1 year when unchecking
+  const wrap    = document.getElementById("expiryPickerWrap");
+  const lbl     = document.getElementById("expiryToggleLabel");
+  if (isNever) {
+    wrap.classList.remove("open");
+    lbl.textContent = "Lifetime License";
+  } else {
+    if (!document.getElementById("genExpiryDate").value) setQuickDate(365);
+    wrap.classList.add("open");
+    lbl.textContent = "Expires On";
   }
 }
 
 function setQuickDate(days) {
-  const d = new Date();
+  const d    = new Date();
   d.setDate(d.getDate() + days);
   const yyyy = d.getFullYear();
   const mm   = String(d.getMonth() + 1).padStart(2, "0");
   const dd   = String(d.getDate()).padStart(2, "0");
   document.getElementById("genExpiryDate").value = `${yyyy}-${mm}-${dd}`;
   document.getElementById("genNever").checked = false;
-  document.getElementById("genExpiryDate").disabled = false;
-  document.getElementById("genExpiryTime").disabled = false;
-  document.getElementById("quickDates").style.display = "flex";
+  document.getElementById("expiryPickerWrap").classList.add("open");
+  document.getElementById("expiryToggleLabel").textContent = "Expires On";
 }
 
 // ── License type toggle ───────────────────────────────────────────────────────
@@ -279,16 +282,28 @@ async function submitGenerate(e) {
     const licMeta   = JSON.parse(atob(fileData.content.replace(/\n/g, "")));
 
     res.innerHTML = `
-      <div class="alert alert-success">✅ License generated for <strong>${display}</strong>!</div>
-      <div style="margin-bottom:.5rem"><strong>License ID:</strong> <code>${licMeta.id}</code></div>
-      <div style="margin-bottom:.75rem" class="text-muted">
-        Expires: ${licMeta.e} &nbsp;|&nbsp; Machines: ${(licMeta.m||[]).join(", ")} &nbsp;|&nbsp; Max: ${licMeta.n}
+      <div class="result-card">
+        <div class="result-header">
+          <div class="result-icon">✅</div>
+          <div>
+            <div class="result-title">License Generated!</div>
+            <div class="result-subtitle">Issued to <strong>${escHtml(display)}</strong></div>
+          </div>
+        </div>
+        <div class="result-meta">
+          <div class="meta-item"><span class="meta-label">License ID</span><code style="font-size:.78rem">${licMeta.id}</code></div>
+          <div class="meta-item"><span class="meta-label">Expires</span><span>${licMeta.e === "never" ? "♾️ Lifetime" : licMeta.e}</span></div>
+          <div class="meta-item"><span class="meta-label">Machines</span><span>${(licMeta.m||["*"]).join(", ")}</span></div>
+          <div class="meta-item"><span class="meta-label">Max</span><span>${licMeta.n}</span></div>
+        </div>
+        <div class="key-label">🔑 License Key</div>
+        <div class="key-box" id="generatedKey">${escHtml(licMeta.key)}</div>
+        <div class="key-actions">
+          <button class="btn btn-outline btn-sm" onclick="copyKey('generatedKey')">&#128203; Copy Key</button>
+          <button class="btn btn-primary btn-sm" onclick="downloadKeyFromBox('generatedKey','${licMeta.id}','${escAttr(display)}')">&#11015;&#65039; Download .txt</button>
+        </div>
+        <p class="text-muted mt1" style="font-size:.8rem">⚠️ Send this key to the customer via a <strong>secure channel</strong>.</p>
       </div>
-      <div class="key-box" id="generatedKey">
-        ${licMeta.key}
-        <button class="btn btn-outline btn-sm copy-btn" onclick="copyKey('generatedKey')">Copy</button>
-      </div>
-      <p class="text-muted mt1">⚠️ Send this key to the customer via a <strong>secure channel</strong>.</p>
     `;
   } catch (err) {
     res.innerHTML = alert_html(`Generation failed: ${err.message}`, "danger");
@@ -296,6 +311,40 @@ async function submitGenerate(e) {
     btn.disabled = false;
     btn.innerHTML = "🔑 Generate License";
   }
+}
+
+function downloadLicenseKey(key, id, customer) {
+  const safe     = (customer || "customer").replace(/[^a-z0-9]/gi, "_");
+  const shortId  = (id || "license").slice(0, 8);
+  const filename = `teemox_license_${safe}_${shortId}.txt`;
+  const content  = [
+    "========================================",
+    "  TEEMOX LICENSE KEY",
+    "========================================",
+    `  ID       : ${id}`,
+    `  Customer : ${customer}`,
+    `  Issued   : ${new Date().toISOString().slice(0, 10)}`,
+    "----------------------------------------",
+    "",
+    key,
+    "",
+    "========================================",
+    "  Keep this file secure.",
+    "  Do NOT share publicly.",
+    "========================================",
+  ].join("\n");
+  const blob = new Blob([content], { type: "text/plain" });
+  const url  = URL.createObjectURL(blob);
+  const a    = Object.assign(document.createElement("a"), { href: url, download: filename });
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function downloadKeyFromBox(boxId, id, customer) {
+  const key = document.getElementById(boxId).textContent.trim();
+  downloadLicenseKey(key, id, customer);
 }
 
 function copyKey(elementId) {
@@ -395,8 +444,10 @@ function showKeyModal(id, key, customer) {
   document.getElementById("modalTitle").textContent = `License Key — ${customer}`;
   document.getElementById("modalBody").innerHTML = `
     <p class="text-muted" style="margin-bottom:.6rem">License ID: <code>${id}</code></p>
-    <div class="key-box" id="modalKey">${escHtml(key)}
-      <button class="btn btn-outline btn-sm copy-btn" onclick="copyKey('modalKey')">Copy</button>
+    <div class="key-box" id="modalKey">${escHtml(key)}</div>
+    <div class="key-actions" style="margin-top:.5rem">
+      <button class="btn btn-outline btn-sm" onclick="copyKey('modalKey')">&#128203; Copy Key</button>
+      <button class="btn btn-primary btn-sm" onclick="downloadKeyFromBox('modalKey','${escAttr(id)}','${escAttr(customer)}')">&#11015;&#65039; Download .txt</button>
     </div>
   `;
   document.getElementById("modal").classList.remove("hidden");
