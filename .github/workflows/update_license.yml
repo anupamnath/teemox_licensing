@@ -1,0 +1,113 @@
+name: "✏️ Update License"
+
+on:
+  workflow_dispatch:
+    inputs:
+      license_id:
+        description: "License ID to update"
+        required: true
+        type: string
+      add_machines:
+        description: "Machine IDs to ADD (comma-separated, blank = skip)"
+        required: false
+        default: ""
+        type: string
+      remove_machines:
+        description: "Machine IDs to REMOVE (comma-separated, blank = skip)"
+        required: false
+        default: ""
+        type: string
+      set_machines:
+        description: "REPLACE entire machine list (comma-separated, overrides add/remove)"
+        required: false
+        default: ""
+        type: string
+      expiry:
+        description: "New expiry date (YYYY-MM-DD or never — blank = unchanged)"
+        required: false
+        default: ""
+        type: string
+      max_machines:
+        description: "New max machines 1–6 (0 = unchanged)"
+        required: false
+        default: "0"
+        type: string
+      sync_interval:
+        description: "New sync interval in minutes (0 = unchanged)"
+        required: false
+        default: "0"
+        type: string
+      grace_hours:
+        description: "New grace period in hours (0 = unchanged)"
+        required: false
+        default: "0"
+        type: string
+      notes:
+        description: "Update internal notes (blank = unchanged)"
+        required: false
+        default: ""
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install cryptography
+        run: pip install cryptography --quiet
+
+      - name: Update license
+        id: update
+        env:
+          LICENSE_PRIVATE_KEY_PEM: ${{ secrets.LICENSE_PRIVATE_KEY_PEM }}
+        run: |
+          OUTPUT=$(python scripts/update_license.py \
+            --id               "${{ github.event.inputs.license_id }}" \
+            --add-machines     "${{ github.event.inputs.add_machines }}" \
+            --remove-machines  "${{ github.event.inputs.remove_machines }}" \
+            --set-machines     "${{ github.event.inputs.set_machines }}" \
+            --expiry           "${{ github.event.inputs.expiry }}" \
+            --max-machines     "${{ github.event.inputs.max_machines }}" \
+            --sync-interval    "${{ github.event.inputs.sync_interval }}" \
+            --grace-hours      "${{ github.event.inputs.grace_hours }}" \
+            --notes            "${{ github.event.inputs.notes }}")
+
+          LICENSE_KEY=$(echo "$OUTPUT" | grep '^LICENSE_KEY=' | cut -d= -f2-)
+          echo "license_key=$LICENSE_KEY" >> $GITHUB_OUTPUT
+          echo "LICENSE_KEY=$LICENSE_KEY" >> $GITHUB_ENV
+
+      - name: Commit updated record
+        run: |
+          git config user.name  "License Bot 🤖"
+          git config user.email "license-bot@users.noreply.github.com"
+          git add licenses/
+          git commit -m "update(license): ${{ github.event.inputs.license_id }}"
+          git push
+
+      - name: Write job summary
+        run: |
+          echo "## ✏️ License Updated" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Field | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|---|---|" >> $GITHUB_STEP_SUMMARY
+          echo "| **License ID** | \`${{ github.event.inputs.license_id }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Added machines** | \`${{ github.event.inputs.add_machines }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Removed machines** | \`${{ github.event.inputs.remove_machines }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **New expiry** | ${{ github.event.inputs.expiry }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🔑 New License Key (send to customer)" >> $GITHUB_STEP_SUMMARY
+          echo "> The old key is now invalid." >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "$LICENSE_KEY" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY

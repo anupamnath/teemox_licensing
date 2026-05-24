@@ -1,0 +1,62 @@
+name: "🚫 Revoke License"
+
+on:
+  workflow_dispatch:
+    inputs:
+      license_id:
+        description: "License ID (UUID hex — from licenses/ directory)"
+        required: true
+        type: string
+      reason:
+        description: "Reason for revocation (logged in the record)"
+        required: false
+        default: "Revoked by admin"
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  revoke:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install cryptography
+        run: pip install cryptography --quiet
+
+      - name: Revoke license
+        id: revoke
+        run: |
+          OUTPUT=$(python scripts/revoke_license.py \
+            --id     "${{ github.event.inputs.license_id }}" \
+            --reason "${{ github.event.inputs.reason }}")
+          echo "$OUTPUT"
+          REVOKED_ID=$(echo "$OUTPUT" | grep '^REVOKED_ID=' | cut -d= -f2-)
+          echo "revoked_id=$REVOKED_ID" >> $GITHUB_OUTPUT
+
+      - name: Commit revocation
+        run: |
+          git config user.name  "License Bot 🤖"
+          git config user.email "license-bot@users.noreply.github.com"
+          git add licenses/ public/valid_licenses.json
+          git commit -m "revoke(license): ${{ github.event.inputs.license_id }} — ${{ github.event.inputs.reason }}"
+          git push
+
+      - name: Write job summary
+        run: |
+          echo "## 🚫 License Revoked" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Field | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|---|---|" >> $GITHUB_STEP_SUMMARY
+          echo "| **License ID** | \`${{ github.event.inputs.license_id }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Reason** | ${{ github.event.inputs.reason }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "> ✅ All running instances of this license will be blocked at their next sync." >> $GITHUB_STEP_SUMMARY

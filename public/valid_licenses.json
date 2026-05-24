@@ -1,0 +1,16 @@
+{
+  "updated_at": "2026-05-24T00:00:00Z",
+  "schema_version": 1,
+  "TEEMOX_MAILER": {
+    "valid": [],
+    "revoked": []
+  },
+  "INFOMANIAK_API": {
+    "valid": [],
+    "revoked": []
+  },
+  "SHOPIFY_API": {
+    "valid": [],
+    "revoked": []
+  }
+}

@@ -1,0 +1,114 @@
+name: "🔑 Generate License"
+
+on:
+  workflow_dispatch:
+    inputs:
+      app_name:
+        description: "Application"
+        required: true
+        type: choice
+        options:
+          - TEEMOX_MAILER
+          - INFOMANIAK_API
+          - SHOPIFY_API
+      display_name:
+        description: "Customer / company name"
+        required: true
+        type: string
+      expiry:
+        description: "Expiry date — YYYY-MM-DD  or  never"
+        required: false
+        default: "never"
+        type: string
+      machines:
+        description: "Machine IDs (comma-separated) — leave * for floating license"
+        required: false
+        default: "*"
+        type: string
+      max_machines:
+        description: "Max simultaneous machines (floating only, 1–6)"
+        required: false
+        default: "1"
+        type: choice
+        options: ["1", "2", "3", "4", "5", "6"]
+      sync_interval:
+        description: "Sync interval in minutes (min 30, default 90)"
+        required: false
+        default: "90"
+        type: string
+      grace_hours:
+        description: "Offline grace period in hours (default 24)"
+        required: false
+        default: "24"
+        type: string
+      notes:
+        description: "Internal notes (not embedded in key)"
+        required: false
+        default: ""
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install cryptography
+        run: pip install cryptography --quiet
+
+      - name: Generate license key
+        id: gen
+        env:
+          LICENSE_PRIVATE_KEY_PEM: ${{ secrets.LICENSE_PRIVATE_KEY_PEM }}
+        run: |
+          OUTPUT=$(python scripts/generate_license.py \
+            --app           "${{ github.event.inputs.app_name }}" \
+            --display       "${{ github.event.inputs.display_name }}" \
+            --expiry        "${{ github.event.inputs.expiry }}" \
+            --machines      "${{ github.event.inputs.machines }}" \
+            --max-machines  "${{ github.event.inputs.max_machines }}" \
+            --sync-interval "${{ github.event.inputs.sync_interval }}" \
+            --grace-hours   "${{ github.event.inputs.grace_hours }}" \
+            --notes         "${{ github.event.inputs.notes }}")
+
+          LICENSE_KEY=$(echo "$OUTPUT" | grep '^LICENSE_KEY=' | cut -d= -f2-)
+          echo "license_key=$LICENSE_KEY" >> $GITHUB_OUTPUT
+          echo "LICENSE_KEY=$LICENSE_KEY" >> $GITHUB_ENV
+
+      - name: Commit license records
+        run: |
+          git config user.name  "License Bot 🤖"
+          git config user.email "license-bot@users.noreply.github.com"
+          git add licenses/ public/valid_licenses.json
+          git commit -m "feat(license): [${{ github.event.inputs.app_name }}] ${{ github.event.inputs.display_name }} — expires ${{ github.event.inputs.expiry }}"
+          git push
+
+      - name: Write job summary
+        run: |
+          echo "## ✅ License Generated" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Field | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|---|---|" >> $GITHUB_STEP_SUMMARY
+          echo "| **App** | \`${{ github.event.inputs.app_name }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Customer** | ${{ github.event.inputs.display_name }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Expiry** | ${{ github.event.inputs.expiry }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Machines** | \`${{ github.event.inputs.machines }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Max machines** | ${{ github.event.inputs.max_machines }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Sync interval** | ${{ github.event.inputs.sync_interval }} min |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Grace period** | ${{ github.event.inputs.grace_hours }} h |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🔑 License Key" >> $GITHUB_STEP_SUMMARY
+          echo "> ⚠️ **Copy this key now** — send it to the customer via a secure channel." >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "$LICENSE_KEY" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
