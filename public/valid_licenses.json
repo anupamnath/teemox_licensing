@@ -1,8 +1,10 @@
 {
-  "updated_at": "2026-05-24T00:00:00Z",
+  "updated_at": "2026-05-24T10:19:19.383304+00:00",
   "schema_version": 1,
   "TEEMOX_MAILER": {
-    "valid": [],
+    "valid": [
+      "2cda875b0c7d4f7f968b6f596316ec02"
+    ],
     "revoked": []
   },
   "INFOMANIAK_API": {
