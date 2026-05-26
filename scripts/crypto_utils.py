@@ -21,6 +21,7 @@ from cryptography.hazmat.primitives.serialization import (
     PublicFormat,
     load_pem_private_key,
     load_pem_public_key,
+    load_der_private_key,
 )
 from cryptography.exceptions import InvalidSignature
 
@@ -67,8 +68,26 @@ def generate_keypair() -> tuple[str, str]:
 
 
 def load_private_key(pem: str) -> Ed25519PrivateKey:
-    # GitHub Actions secrets may store newlines as literal \n — normalise before loading
+    """Load an Ed25519 private key from a PEM string.
+
+    Tolerates all common GitHub Actions secret storage formats:
+    - Proper multi-line PEM
+    - Literal \\n escape sequences
+    - No newlines at all (single-line concatenation)
+    """
+    import re
+    # Normalise literal \n escape sequences
     pem = pem.replace("\\n", "\n").strip()
+    # Extract the raw base64 payload between any PEM headers and decode to DER.
+    # This bypasses all PEM framing issues entirely.
+    b64 = re.sub(r"-----[^-]+-----", "", pem).replace("\n", "").replace("\r", "").strip()
+    if b64:
+        import base64 as _b64
+        try:
+            der = _b64.b64decode(b64)
+            return load_der_private_key(der, password=None)
+        except Exception:
+            pass  # fall through to PEM load as last resort
     return load_pem_private_key(pem.encode(), password=None)
 
 
