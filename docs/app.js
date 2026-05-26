@@ -73,13 +73,19 @@ async function login() {
     // Classic PATs return X-OAuth-Scopes; fine-grained PATs do not.
     const scopeHeader = rawResp.headers.get("X-OAuth-Scopes") || "";
     const scopes = scopeHeader.split(",").map(s => s.trim()).filter(Boolean);
-    if (scopes.length > 0 && !scopes.includes("repo") && !scopes.includes("workflow")) {
-      showAlert("loginAlert",
-        `⚠️ Token is missing the <strong>repo</strong> scope required for workflow dispatch.<br>
-        Scopes on this token: <code>${scopes.join(", ")}</code>.<br>
-        <a href="https://github.com/settings/tokens/new?scopes=repo,workflow&description=Teemox+License+Admin" target="_blank">Create a new token with the correct scopes ↗</a>`,
-        "warn");
-      return;
+    if (scopes.length > 0) {
+      const missing = [];
+      if (!scopes.includes("repo"))     missing.push("<code>repo</code>");
+      if (!scopes.includes("workflow")) missing.push("<code>workflow</code>");
+      if (missing.length > 0) {
+        showAlert("loginAlert",
+          `⚠️ Token is missing required scope(s): ${missing.join(" and ")}.<br>
+          Scopes on this token: <code>${scopes.join(", ")}</code>.<br>
+          Both <code>repo</code> and <code>workflow</code> scopes are required for workflow dispatch.<br>
+          <a href="https://github.com/settings/tokens/new?scopes=repo,workflow&description=Teemox+License+Admin" target="_blank">Create a new token with the correct scopes ↗</a>`,
+          "warn");
+        return;
+      }
     }
 
     sessionStorage.setItem("gh_token", token);
