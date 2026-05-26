@@ -40,7 +40,9 @@ async function api(endpoint, method = "GET", body = null) {
 
   const data = await resp.json().catch(() => null);
   if (!resp.ok) {
-    throw new Error(data?.message || `GitHub API error: HTTP ${resp.status}`);
+    const extra = data?.errors?.map(e => e.message || JSON.stringify(e)).join("; ");
+    const msg   = data?.message || "GitHub API error";
+    throw new Error(extra ? `${msg}: ${extra} (HTTP ${resp.status})` : `${msg} (HTTP ${resp.status})`);
   }
   return data;
 }
@@ -54,7 +56,32 @@ async function login() {
 
   showAlert("loginAlert", '<span class="spinner"></span> Verifying token…', "info");
   try {
-    const user = await api("/user");
+    // Use raw fetch so we can inspect the X-OAuth-Scopes response header
+    const rawResp = await fetch("https://api.github.com/user", {
+      headers: {
+        Authorization: `token ${token}`,
+        Accept: "application/vnd.github.v3+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+      },
+    });
+    if (!rawResp.ok) {
+      const d = await rawResp.json().catch(() => null);
+      throw new Error(d?.message || `HTTP ${rawResp.status}`);
+    }
+    const user = await rawResp.json();
+
+    // Classic PATs return X-OAuth-Scopes; fine-grained PATs do not.
+    const scopeHeader = rawResp.headers.get("X-OAuth-Scopes") || "";
+    const scopes = scopeHeader.split(",").map(s => s.trim()).filter(Boolean);
+    if (scopes.length > 0 && !scopes.includes("repo") && !scopes.includes("workflow")) {
+      showAlert("loginAlert",
+        `⚠️ Token is missing the <strong>repo</strong> scope required for workflow dispatch.<br>
+        Scopes on this token: <code>${scopes.join(", ")}</code>.<br>
+        <a href="https://github.com/settings/tokens/new?scopes=repo,workflow&description=Teemox+License+Admin" target="_blank">Create a new token with the correct scopes ↗</a>`,
+        "warn");
+      return;
+    }
+
     sessionStorage.setItem("gh_token", token);
     document.getElementById("userInfo").textContent = `@${user.login}`;
     document.getElementById("loginScreen").classList.add("hidden");
@@ -230,6 +257,15 @@ async function submitGenerate(e) {
   res.innerHTML = alert_html('<span class="spinner"></span> Triggering GitHub Actions workflow…', "info");
 
   try {
+    // Pre-check: confirm the workflow is enabled before attempting dispatch
+    const wfInfo = await api(`/repos/${OWNER}/${REPO}/actions/workflows/generate_license.yml`);
+    if (wfInfo && wfInfo.state !== "active") {
+      throw new Error(
+        `Workflow is disabled (state: "${wfInfo.state}"). ` +
+        `Re-enable it at github.com/${OWNER}/${REPO}/actions/workflows/generate_license.yml`
+      );
+    }
+
     // Dispatch workflow
     await api(`/repos/${OWNER}/${REPO}/actions/workflows/generate_license.yml/dispatches`, "POST", {
       ref: BRANCH,
