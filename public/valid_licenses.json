@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-24T20:46:29.434146+00:00",
+  "updated_at": "2026-05-26T13:35:19.501050+00:00",
   "schema_version": 1,
   "TEEMOX_MAILER": {
     "valid": [
@@ -19,7 +19,8 @@
   },
   "SHOPIFY_API": {
     "valid": [
-      "b7c4f8a5427840c098cd18b825fe6204"
+      "b7c4f8a5427840c098cd18b825fe6204",
+      "f9a3d96dfd0543cd8372eb94a803b63d"
     ],
     "revoked": []
   }
