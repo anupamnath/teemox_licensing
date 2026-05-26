@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-26T17:09:09.891308+00:00",
+  "updated_at": "2026-05-26T17:09:25.111033+00:00",
   "schema_version": 1,
   "TEEMOX_MAILER": {
     "valid": [
@@ -10,12 +10,13 @@
   },
   "INFOMANIAK_API": {
     "valid": [
-      "9368f68beb9f436ab16a7abedde1e47b",
       "1ffe14287ec04e459fcc97c83147f542",
       "86750c2a2c2a4285a4ca498acd1d4597",
       "6f99a57059ec404d98803c8e5a497680"
     ],
-    "revoked": []
+    "revoked": [
+      "9368f68beb9f436ab16a7abedde1e47b"
+    ]
   },
   "SHOPIFY_API": {
     "valid": [
