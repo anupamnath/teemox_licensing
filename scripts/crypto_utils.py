@@ -27,11 +27,18 @@ from cryptography.exceptions import InvalidSignature
 
 # ── Constants ─────────────────────────────────────────────────────────────────
 LICENSE_VERSION   = 4
-MAX_MACHINES      = 6
+MAX_MACHINES      = 10        # raised from 6 to 10
 MIN_SYNC_MINUTES  = 30
 MAX_GRACE_HOURS   = 720   # 30 days
 
 APP_NAMES = frozenset({"TEEMOX_MAILER", "INFOMANIAK_API", "SHOPIFY_API"})
+
+# Each app has its own private key secret in GitHub Actions
+APP_SECRET_NAME = {
+    "TEEMOX_MAILER":  "TEEMOX_MAILER_PRIVATE_KEY",
+    "INFOMANIAK_API": "INFOMANIAK_API_PRIVATE_KEY",
+    "SHOPIFY_API":    "SHOPIFY_API_PRIVATE_KEY",
+}
 
 APP_PREFIX = {
     "TEEMOX_MAILER":  "TMX",

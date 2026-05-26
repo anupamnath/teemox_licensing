@@ -1,0 +1,44 @@
+name: "🧹 Cleanup Licenses"
+
+on:
+  schedule:
+    - cron: "0 2 * * *"   # runs daily at 02:00 UTC
+  workflow_dispatch: {}     # also allow manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Install cryptography
+        run: pip install cryptography --quiet
+
+      - name: Run cleanup
+        run: python scripts/cleanup_licenses.py
+
+      - name: Commit changes (if any)
+        run: |
+          git config user.name  "License Bot 🤖"
+          git config user.email "license-bot@users.noreply.github.com"
+          git add licenses/ public/valid_licenses.json
+          # Only commit if there are changes
+          git diff --cached --quiet || git commit -m "chore(cleanup): auto-revoke expired + delete 7-day-old revoked licenses"
+          git push || true
+
+      - name: Write job summary
+        run: |
+          echo "## 🧹 License Cleanup Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- Expired licenses auto-revoked" >> $GITHUB_STEP_SUMMARY
+          echo "- Licenses revoked >7 days ago permanently deleted" >> $GITHUB_STEP_SUMMARY

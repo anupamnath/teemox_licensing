@@ -404,7 +404,7 @@ let allLicenses = [];
 async function loadLicenses() {
   const tbody  = document.getElementById("licensesTbody");
   const filter = document.getElementById("licFilter").value.toLowerCase();
-  tbody.innerHTML = "<tr><td colspan='8' class='text-muted'><span class='spinner'></span> Loading…</td></tr>";
+  tbody.innerHTML = "<tr><td colspan='9' class='text-muted'><span class='spinner'></span> Loading…</td></tr>";
 
   try {
     const files = (await api(`/repos/${OWNER}/${REPO}/contents/licenses`)) || [];
@@ -427,7 +427,7 @@ async function loadLicenses() {
 
     renderLicenses(filter);
   } catch (e) {
-    tbody.innerHTML = `<tr><td colspan='8' class='text-muted'>Error: ${e.message}</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan='9' class='text-muted'>Error: ${e.message}</td></tr>`;
   }
 }
 
@@ -442,7 +442,7 @@ function renderLicenses(filter = "") {
     : allLicenses;
 
   if (!items.length) {
-    tbody.innerHTML = "<tr><td colspan='8' class='text-muted'>No licenses found.</td></tr>";
+    tbody.innerHTML = "<tr><td colspan='9' class='text-muted'>No licenses found.</td></tr>";
     return;
   }
 
@@ -456,6 +456,19 @@ function renderLicenses(filter = "") {
         ? `<span class="badge badge-expired">Expired</span>`
         : `<span class="badge badge-active">Active</span>`;
 
+    // Calculate auto-delete countdown for revoked licenses
+    let revokedCell = '—';
+    if (status === "revoked" && (l.revoked_at || l.revoke_reason)) {
+      const revAt = l.revoked_at ? new Date(l.revoked_at) : null;
+      if (revAt) {
+        const deleteDate = new Date(revAt.getTime() + 7 * 24 * 60 * 60 * 1000);
+        const daysLeft = Math.ceil((deleteDate - new Date()) / (24 * 60 * 60 * 1000));
+        revokedCell = daysLeft > 0
+          ? `<span title="Auto-deleted in ${daysLeft}d" style="font-size:.75rem;color:#c0392b">${revAt.toLocaleDateString()}<br><small>🗑 in ${daysLeft}d</small></span>`
+          : `<span style="font-size:.75rem;color:#999">Pending delete</span>`;
+      }
+    }
+
     return `
       <tr>
         <td class="mono">${l.id?.slice(0, 12)}…</td>
@@ -465,12 +478,14 @@ function renderLicenses(filter = "") {
         <td>${(l.m||["*"]).join(", ")}</td>
         <td>${l.n}</td>
         <td>${statusBadge}</td>
+        <td>${revokedCell}</td>
         <td>
           <div class="flex">
             ${status !== "revoked" ? `
               <button class="btn btn-outline btn-sm" onclick="showKeyModal('${l.id}','${escAttr(l.key)}','${escAttr(l.d)}')">🔑 Key</button>
               <button class="btn btn-danger btn-sm" onclick="confirmRevoke('${l.id}','${escAttr(l.d)}','${l.app}')">Revoke</button>
-            ` : '<span class="text-muted">—</span>'}
+            ` : ''}
+            <button class="btn btn-danger btn-sm" style="background:#7f1d1d;border-color:#7f1d1d" onclick="confirmDelete('${l.id}','${escAttr(l.d)}')" title="Permanently delete this license">🗑️ Delete</button>
           </div>
         </td>
       </tr>`;
@@ -517,6 +532,26 @@ async function doRevoke(id, customer, app) {
     res.innerHTML = alert_html(`✅ Revocation workflow dispatched for <strong>${customer}</strong>. Reload licenses in ~30s.`, "success");
   } catch (e) {
     res.innerHTML = alert_html(`Revocation failed: ${e.message}`, "danger");
+  }
+}
+
+function confirmDelete(id, customer) {
+  if (!confirm(`⚠️ PERMANENTLY DELETE the license for "${customer}"?\n\nThis cannot be undone. The license file will be removed from the repository and the customer's app will fail at next sync.`)) return;
+  doDelete(id, customer);
+}
+
+async function doDelete(id, customer) {
+  const res = document.getElementById("licAlert");
+  res.innerHTML = alert_html(`<span class="spinner"></span> Deleting ${customer}…`, "info");
+  res.classList.remove("hidden");
+  try {
+    await api(`/repos/${OWNER}/${REPO}/actions/workflows/delete_license.yml/dispatches`, "POST", {
+      ref: BRANCH,
+      inputs: { license_id: id },
+    });
+    res.innerHTML = alert_html(`✅ Delete workflow dispatched for <strong>${customer}</strong>. Reload licenses in ~30s.`, "success");
+  } catch (e) {
+    res.innerHTML = alert_html(`Delete failed: ${e.message}`, "danger");
   }
 }
 

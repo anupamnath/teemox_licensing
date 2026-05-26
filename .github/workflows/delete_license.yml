@@ -1,0 +1,54 @@
+name: "🗑️ Delete License"
+
+on:
+  workflow_dispatch:
+    inputs:
+      license_id:
+        description: "License ID (UUID hex — from licenses/ directory)"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  delete:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Install cryptography
+        run: pip install cryptography --quiet
+
+      - name: Delete license
+        id: delete
+        run: |
+          OUTPUT=$(python scripts/delete_license.py --id "${{ github.event.inputs.license_id }}")
+          echo "$OUTPUT"
+          DELETED_ID=$(echo "$OUTPUT" | grep '^DELETED_ID=' | cut -d= -f2-)
+          echo "deleted_id=$DELETED_ID" >> $GITHUB_OUTPUT
+
+      - name: Commit deletion
+        run: |
+          git config user.name  "License Bot 🤖"
+          git config user.email "license-bot@users.noreply.github.com"
+          git add -A licenses/ public/valid_licenses.json
+          git diff --cached --quiet || git commit -m "delete(license): ${{ github.event.inputs.license_id }}"
+          git push
+
+      - name: Write job summary
+        run: |
+          echo "## 🗑️ License Permanently Deleted" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Field | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|---|---|" >> $GITHUB_STEP_SUMMARY
+          echo "| **License ID** | \`${{ github.event.inputs.license_id }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "> Clients with this key will receive 'license not recognised' at next sync." >> $GITHUB_STEP_SUMMARY

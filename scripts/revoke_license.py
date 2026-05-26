@@ -50,15 +50,21 @@ def main() -> None:
     data = json.loads(vl_path.read_text(encoding="utf-8"))
 
     if app not in data:
-        data[app] = {"valid": [], "revoked": []}
+        data[app] = {"valid": [], "revoked": [], "revoked_at": {}}
+
+    if "revoked_at" not in data[app]:
+        data[app]["revoked_at"] = {}
 
     # Remove from valid
-    if license_id in data[app]["valid"]:
+    if license_id in data[app].get("valid", []):
         data[app]["valid"].remove(license_id)
 
     # Add to revoked (deduplicated)
-    if license_id not in data[app]["revoked"]:
-        data[app]["revoked"].append(license_id)
+    if license_id not in data[app].get("revoked", []):
+        data[app].setdefault("revoked", []).append(license_id)
+
+    # Store revoked_at timestamp
+    data[app]["revoked_at"][license_id] = record["revoked_at"]
 
     data["updated_at"] = datetime.now(timezone.utc).isoformat()
     vl_path.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")

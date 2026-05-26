@@ -26,7 +26,7 @@ on:
         default: "*"
         type: string
       max_machines:
-        description: "Max simultaneous machines (floating only, 1–6)"
+        description: "Max machines allowed for this license (1–10)"
         required: false
         default: "1"
         type: string
@@ -68,7 +68,10 @@ jobs:
       - name: Generate license key
         id: gen
         env:
-          LICENSE_PRIVATE_KEY_PEM: ${{ secrets.LICENSE_PRIVATE_KEY_PEM }}
+          SHOPIFY_API_PRIVATE_KEY:    ${{ secrets.SHOPIFY_API_PRIVATE_KEY }}
+          TEEMOX_MAILER_PRIVATE_KEY:  ${{ secrets.TEEMOX_MAILER_PRIVATE_KEY }}
+          INFOMANIAK_API_PRIVATE_KEY: ${{ secrets.INFOMANIAK_API_PRIVATE_KEY }}
+          LICENSE_PRIVATE_KEY_PEM:    ${{ secrets.LICENSE_PRIVATE_KEY_PEM }}
         run: |
           OUTPUT=$(python scripts/generate_license.py \
             --app           "${{ github.event.inputs.app_name }}" \

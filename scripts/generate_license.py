@@ -22,7 +22,7 @@ HERE = Path(__file__).parent
 REPO = HERE.parent
 sys.path.insert(0, str(HERE))
 
-from crypto_utils import create_license
+from crypto_utils import create_license, APP_SECRET_NAME
 
 LICENSES_DIR = REPO / "licenses"
 PUBLIC_DIR   = REPO / "public"
@@ -38,10 +38,10 @@ def load_valid(path: Path) -> dict:
             pass
     return {
         "updated_at":     datetime.now(timezone.utc).isoformat(),
-        "schema_version": 1,
-        "TEEMOX_MAILER":  {"valid": [], "revoked": []},
-        "INFOMANIAK_API": {"valid": [], "revoked": []},
-        "SHOPIFY_API":    {"valid": [], "revoked": []},
+        "schema_version": 2,
+        "TEEMOX_MAILER":  {"valid": [], "revoked": [], "revoked_at": {}},
+        "INFOMANIAK_API": {"valid": [], "revoked": [], "revoked_at": {}},
+        "SHOPIFY_API":    {"valid": [], "revoked": [], "revoked_at": {}},
     }
 
 
@@ -58,15 +58,23 @@ def main() -> None:
     parser.add_argument("--display",       required=True,  help="Customer / company name")
     parser.add_argument("--expiry",        default="never",help="YYYY-MM-DD or 'never'")
     parser.add_argument("--machines",      default="*",    help="Comma-separated machine IDs (or * for any)")
-    parser.add_argument("--max-machines",  type=int, default=1,  help="1–6")
+    parser.add_argument("--max-machines",  type=int, default=1,  help="1–10")
     parser.add_argument("--sync-interval", type=int, default=90, help="Sync interval in minutes (min 30)")
     parser.add_argument("--grace-hours",   type=int, default=24, help="Offline grace period in hours")
     parser.add_argument("--notes",         default="",     help="Internal notes (not embedded in key)")
     args = parser.parse_args()
 
-    private_pem = os.environ.get("LICENSE_PRIVATE_KEY_PEM", "").strip()
+    # Use per-app private key secret; fall back to generic LICENSE_PRIVATE_KEY_PEM
+    secret_name = APP_SECRET_NAME.get(args.app, "LICENSE_PRIVATE_KEY_PEM")
+    private_pem = os.environ.get(secret_name, "").strip()
     if not private_pem:
-        print("ERROR: LICENSE_PRIVATE_KEY_PEM environment variable is not set.", file=sys.stderr)
+        # Fallback for backward compatibility
+        private_pem = os.environ.get("LICENSE_PRIVATE_KEY_PEM", "").strip()
+    if not private_pem:
+        print(
+            f"ERROR: Neither {secret_name} nor LICENSE_PRIVATE_KEY_PEM "
+            "environment variable is set.", file=sys.stderr
+        )
         sys.exit(1)
 
     machines = [m.strip() for m in args.machines.split(",") if m.strip()] or ["*"]
