@@ -67,6 +67,8 @@ def generate_keypair() -> tuple[str, str]:
 
 
 def load_private_key(pem: str) -> Ed25519PrivateKey:
+    # GitHub Actions secrets may store newlines as literal \n — normalise before loading
+    pem = pem.replace("\\n", "\n").strip()
     return load_pem_private_key(pem.encode(), password=None)
 
 
