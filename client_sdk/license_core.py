@@ -41,7 +41,7 @@ GITHUB_REPO  = "teemox_licensing"
 # Ed25519 public key — patched in by scripts/setup_keypair.py
 PUBLIC_KEY_PEM = """
 -----BEGIN PUBLIC KEY-----
-MCowBQYDK2VwAyEAGIDY1XRAic/aQGxuMirvnX6M0g67xRheQG0M1R8v+rc=
+MCowBQYDK2VwAyEAsjl8haqUEVYfHsQpXG4KEM1kzKFXArpbeveO6zoY2R8=
 -----END PUBLIC KEY-----
 """
 
