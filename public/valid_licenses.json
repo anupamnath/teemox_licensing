@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-27T08:52:34.881414+00:00",
+  "updated_at": "2026-05-27T10:05:54.682626+00:00",
   "schema_version": 1,
   "TEEMOX_MAILER": {
     "valid": [
@@ -13,7 +13,8 @@
     "valid": [
       "1ffe14287ec04e459fcc97c83147f542",
       "86750c2a2c2a4285a4ca498acd1d4597",
-      "6f99a57059ec404d98803c8e5a497680"
+      "6f99a57059ec404d98803c8e5a497680",
+      "facd7a38aa0f4cb58689ff94fb074ddc"
     ],
     "revoked": [
       "9368f68beb9f436ab16a7abedde1e47b"
