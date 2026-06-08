@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-07T03:14:42.784960+00:00",
+  "updated_at": "2026-06-08T03:16:07.187637+00:00",
   "schema_version": 1,
   "TEEMOX_MAILER": {
     "valid": [],
@@ -10,12 +10,8 @@
     "valid": [
       "a8fdfa9e21934a569e9292ce083fb6fe"
     ],
-    "revoked": [
-      "facd7a38aa0f4cb58689ff94fb074ddc"
-    ],
-    "revoked_at": {
-      "facd7a38aa0f4cb58689ff94fb074ddc": "2026-05-31T03:14:51.389402+00:00"
-    }
+    "revoked": [],
+    "revoked_at": {}
   },
   "SHOPIFY_API": {
     "valid": [
@@ -27,7 +23,6 @@
       "981f9ad1e69e45cdb555ca632c7fb8fc"
     ],
     "revoked": [
-      "18ccc3d4ad7c40728968194a6d9a40d7",
       "abe392bd6c9f49ffa4e02e9435d9e1f8",
       "d47f62d7fe98453ab1b914e5b07f7f4a",
       "2afd90ca021441529fe3541e26d60178",
@@ -37,7 +32,6 @@
       "16bba1c18fbc4dd7ab51d01611cb7e15"
     ],
     "revoked_at": {
-      "18ccc3d4ad7c40728968194a6d9a40d7": "2026-05-31T03:14:51.389402+00:00",
       "abe392bd6c9f49ffa4e02e9435d9e1f8": "2026-06-03T03:15:58.480084+00:00",
       "d47f62d7fe98453ab1b914e5b07f7f4a": "2026-06-03T03:15:58.480084+00:00",
       "2afd90ca021441529fe3541e26d60178": "2026-06-04T03:15:33.487519+00:00",
