@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-08T03:16:07.187637+00:00",
+  "updated_at": "2026-06-09T03:13:22.306495+00:00",
   "schema_version": 1,
   "TEEMOX_MAILER": {
     "valid": [],
@@ -7,11 +7,13 @@
     "revoked_at": {}
   },
   "INFOMANIAK_API": {
-    "valid": [
+    "valid": [],
+    "revoked": [
       "a8fdfa9e21934a569e9292ce083fb6fe"
     ],
-    "revoked": [],
-    "revoked_at": {}
+    "revoked_at": {
+      "a8fdfa9e21934a569e9292ce083fb6fe": "2026-06-09T03:13:22.305570+00:00"
+    }
   },
   "SHOPIFY_API": {
     "valid": [
