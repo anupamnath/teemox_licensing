@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-15T03:16:30.339746+00:00",
+  "updated_at": "2026-06-16T03:15:06.122424+00:00",
   "schema_version": 1,
   "TEEMOX_MAILER": {
     "valid": [],
@@ -8,12 +8,8 @@
   },
   "INFOMANIAK_API": {
     "valid": [],
-    "revoked": [
-      "a8fdfa9e21934a569e9292ce083fb6fe"
-    ],
-    "revoked_at": {
-      "a8fdfa9e21934a569e9292ce083fb6fe": "2026-06-09T03:13:22.305570+00:00"
-    }
+    "revoked": [],
+    "revoked_at": {}
   },
   "SHOPIFY_API": {
     "valid": [
