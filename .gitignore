@@ -1,8 +1,14 @@
 # Teemox License Server — private key (NEVER COMMIT)
 private_key.pem
+zoho_calendar_private_key.pem
 
 # Python cache
 __pycache__/
 *.pyc
 *.pyo
 .env
+
+# Temp scripts
+generate_zoho_keypair.py
+generate_zoho_license.py
+update_valid_licenses.py

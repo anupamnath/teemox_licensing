@@ -9,13 +9,14 @@
 
 // ── Config (edit to match your repo) ─────────────────────────────────────────
 const OWNER = "anupamnath";
-const REPO  = "teemox_licensing";
+const REPO = "teemox_licensing";
 const BRANCH = "main";
 
 const APP_LABELS = {
-  TEEMOX_MAILER:  { label: "Teemox Mailer",   badgeClass: "badge-tmx" },
-  INFOMANIAK_API: { label: "Infomaniak API",   badgeClass: "badge-inf" },
-  SHOPIFY_API:    { label: "Shopify API",      badgeClass: "badge-sho" },
+  TEEMOX_MAILER: { label: "Teemox Mailer", badgeClass: "badge-tmx" },
+  INFOMANIAK_API: { label: "Infomaniak API", badgeClass: "badge-inf" },
+  SHOPIFY_API: { label: "Shopify API", badgeClass: "badge-sho" },
+  ZOHO_CALENDAR: { label: "Zoho Calendar Bulk", badgeClass: "badge-zoh" },
 };
 
 // ── State ─────────────────────────────────────────────────────────────────────
@@ -41,7 +42,7 @@ async function api(endpoint, method = "GET", body = null) {
   const data = await resp.json().catch(() => null);
   if (!resp.ok) {
     const extra = data?.errors?.map(e => e.message || JSON.stringify(e)).join("; ");
-    const msg   = data?.message || "GitHub API error";
+    const msg = data?.message || "GitHub API error";
     throw new Error(extra ? `${msg}: ${extra} (HTTP ${resp.status})` : `${msg} (HTTP ${resp.status})`);
   }
   return data;
@@ -75,7 +76,7 @@ async function login() {
     const scopes = scopeHeader.split(",").map(s => s.trim()).filter(Boolean);
     if (scopes.length > 0) {
       const missing = [];
-      if (!scopes.includes("repo"))     missing.push("<code>repo</code>");
+      if (!scopes.includes("repo")) missing.push("<code>repo</code>");
       if (!scopes.includes("workflow")) missing.push("<code>workflow</code>");
       if (missing.length > 0) {
         showAlert("loginAlert",
@@ -115,7 +116,7 @@ function showTab(name) {
   if (link) link.classList.add("active");
 
   if (name === "dashboard") loadDashboard();
-  if (name === "licenses")  loadLicenses();
+  if (name === "licenses") loadLicenses();
 }
 
 // ── Dashboard ─────────────────────────────────────────────────────────────────
@@ -133,9 +134,9 @@ async function loadDashboard() {
 
     for (const app of Object.keys(APP_LABELS)) {
       const v = valid?.[app] || { valid: [], revoked: [] };
-      perApp[app].active  = v.valid.length;
+      perApp[app].active = v.valid.length;
       perApp[app].revoked = v.revoked.length;
-      counts.active  += v.valid.length;
+      counts.active += v.valid.length;
       counts.revoked += v.revoked.length;
     }
     counts.total = (Array.isArray(files) ? files.filter(f => f.name.endsWith(".json")).length : 0);
@@ -181,8 +182,8 @@ function initGenerateTab() {
 
 function toggleNever() {
   const isNever = document.getElementById("genNever").checked;
-  const wrap    = document.getElementById("expiryPickerWrap");
-  const lbl     = document.getElementById("expiryToggleLabel");
+  const wrap = document.getElementById("expiryPickerWrap");
+  const lbl = document.getElementById("expiryToggleLabel");
   if (isNever) {
     wrap.classList.remove("open");
     lbl.textContent = "Lifetime License";
@@ -194,11 +195,11 @@ function toggleNever() {
 }
 
 function setQuickDate(days) {
-  const d    = new Date();
+  const d = new Date();
   d.setDate(d.getDate() + days);
   const yyyy = d.getFullYear();
-  const mm   = String(d.getMonth() + 1).padStart(2, "0");
-  const dd   = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
   document.getElementById("genExpiryDate").value = `${yyyy}-${mm}-${dd}`;
   document.getElementById("genNever").checked = false;
   document.getElementById("expiryPickerWrap").classList.add("open");
@@ -208,7 +209,7 @@ function setQuickDate(days) {
 // ── License type toggle ───────────────────────────────────────────────────────
 
 function toggleLicenseType() {
-  const type     = document.getElementById("licenseType").value;
+  const type = document.getElementById("licenseType").value;
   const mSection = document.getElementById("machineSection");
   const fSection = document.getElementById("floatingSection");
   if (type === "machine") {
@@ -222,7 +223,7 @@ function toggleLicenseType() {
 
 function addMachineRow() {
   const list = document.getElementById("machineInputs");
-  const row  = document.createElement("div");
+  const row = document.createElement("div");
   row.className = "machine-row";
   row.innerHTML = `
     <input type="text" placeholder="16-char hex machine ID" maxlength="32" />
@@ -233,20 +234,20 @@ function addMachineRow() {
 
 async function submitGenerate(e) {
   e.preventDefault();
-  const btn  = document.getElementById("genBtn");
-  const res  = document.getElementById("genResult");
+  const btn = document.getElementById("genBtn");
+  const res = document.getElementById("genResult");
   res.innerHTML = "";
 
-  const app     = document.getElementById("genApp").value;
+  const app = document.getElementById("genApp").value;
   const display = document.getElementById("genCustomer").value.trim();
-  const isNever  = document.getElementById("genNever").checked;
-  const expDate   = document.getElementById("genExpiryDate").value;
-  const expiry    = isNever ? "never" : (expDate || "never");
-  const type    = document.getElementById("licenseType").value;
+  const isNever = document.getElementById("genNever").checked;
+  const expDate = document.getElementById("genExpiryDate").value;
+  const expiry = isNever ? "never" : (expDate || "never");
+  const type = document.getElementById("licenseType").value;
   const maxMach = document.getElementById("genMaxMachines").value;
   const syncInt = document.getElementById("genSyncInterval").value || "90";
-  const grace   = document.getElementById("genGrace").value || "24";
-  const notes   = document.getElementById("genNotes").value.trim();
+  const grace = document.getElementById("genGrace").value || "24";
+  const notes = document.getElementById("genNotes").value.trim();
 
   if (!display) { res.innerHTML = alert_html("Customer name is required.", "danger"); return; }
 
@@ -276,14 +277,14 @@ async function submitGenerate(e) {
     await api(`/repos/${OWNER}/${REPO}/actions/workflows/generate_license.yml/dispatches`, "POST", {
       ref: BRANCH,
       inputs: {
-        app_name:      app,
-        display_name:  display,
-        expiry:        expiry,
-        machines:      machines,
-        max_machines:  maxMach,
+        app_name: app,
+        display_name: display,
+        expiry: expiry,
+        machines: machines,
+        max_machines: maxMach,
         sync_interval: syncInt,
-        grace_hours:   grace,
-        notes:         notes,
+        grace_hours: grace,
+        notes: notes,
       },
     });
 
@@ -292,7 +293,7 @@ async function submitGenerate(e) {
 
     // Find the latest run
     const runs = await api(`/repos/${OWNER}/${REPO}/actions/workflows/generate_license.yml/runs?per_page=5&branch=${BRANCH}`);
-    const run  = runs?.workflow_runs?.[0];
+    const run = runs?.workflow_runs?.[0];
     if (!run) throw new Error("Could not find the workflow run. Check Actions tab manually.");
 
     // Poll for completion
@@ -320,8 +321,8 @@ async function submitGenerate(e) {
     const jsonFiles = files.filter(f => f.name.endsWith(".json")).sort((a, b) => b.name.localeCompare(a.name));
     if (!jsonFiles.length) throw new Error("License file not found after workflow.");
 
-    const fileData  = await api(`/repos/${OWNER}/${REPO}/contents/${jsonFiles[0].path}`);
-    const licMeta   = JSON.parse(atob(fileData.content.replace(/\n/g, "")));
+    const fileData = await api(`/repos/${OWNER}/${REPO}/contents/${jsonFiles[0].path}`);
+    const licMeta = JSON.parse(atob(fileData.content.replace(/\n/g, "")));
 
     res.innerHTML = `
       <div class="result-card">
@@ -335,7 +336,7 @@ async function submitGenerate(e) {
         <div class="result-meta">
           <div class="meta-item"><span class="meta-label">License ID</span><code style="font-size:.78rem">${licMeta.id}</code></div>
           <div class="meta-item"><span class="meta-label">Expires</span><span>${licMeta.e === "never" ? "♾️ Lifetime" : licMeta.e}</span></div>
-          <div class="meta-item"><span class="meta-label">Machines</span><span>${(licMeta.m||["*"]).join(", ")}</span></div>
+          <div class="meta-item"><span class="meta-label">Machines</span><span>${(licMeta.m || ["*"]).join(", ")}</span></div>
           <div class="meta-item"><span class="meta-label">Max</span><span>${licMeta.n}</span></div>
         </div>
         <div class="key-label">🔑 License Key</div>
@@ -356,10 +357,10 @@ async function submitGenerate(e) {
 }
 
 function downloadLicenseKey(key, id, customer) {
-  const safe     = (customer || "customer").replace(/[^a-z0-9]/gi, "_");
-  const shortId  = (id || "license").slice(0, 8);
+  const safe = (customer || "customer").replace(/[^a-z0-9]/gi, "_");
+  const shortId = (id || "license").slice(0, 8);
   const filename = `teemox_license_${safe}_${shortId}.txt`;
-  const content  = [
+  const content = [
     "========================================",
     "  TEEMOX LICENSE KEY",
     "========================================",
@@ -376,8 +377,8 @@ function downloadLicenseKey(key, id, customer) {
     "========================================",
   ].join("\n");
   const blob = new Blob([content], { type: "text/plain" });
-  const url  = URL.createObjectURL(blob);
-  const a    = Object.assign(document.createElement("a"), { href: url, download: filename });
+  const url = URL.createObjectURL(blob);
+  const a = Object.assign(document.createElement("a"), { href: url, download: filename });
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -390,7 +391,7 @@ function downloadKeyFromBox(boxId, id, customer) {
 }
 
 function copyKey(elementId) {
-  const box  = document.getElementById(elementId);
+  const box = document.getElementById(elementId);
   const text = box.innerText.replace("Copy", "").trim();
   navigator.clipboard.writeText(text).then(() => {
     const btn = box.querySelector(".copy-btn");
@@ -402,7 +403,7 @@ function copyKey(elementId) {
 let allLicenses = [];
 
 async function loadLicenses() {
-  const tbody  = document.getElementById("licensesTbody");
+  const tbody = document.getElementById("licensesTbody");
   const filter = document.getElementById("licFilter").value.toLowerCase();
   tbody.innerHTML = "<tr><td colspan='9' class='text-muted'><span class='spinner'></span> Loading…</td></tr>";
 
@@ -435,10 +436,10 @@ function renderLicenses(filter = "") {
   const tbody = document.getElementById("licensesTbody");
   const items = filter
     ? allLicenses.filter(l =>
-        l.d?.toLowerCase().includes(filter) ||
-        l.id?.includes(filter) ||
-        l.app?.toLowerCase().includes(filter)
-      )
+      l.d?.toLowerCase().includes(filter) ||
+      l.id?.includes(filter) ||
+      l.app?.toLowerCase().includes(filter)
+    )
     : allLicenses;
 
   if (!items.length) {
@@ -447,7 +448,7 @@ function renderLicenses(filter = "") {
   }
 
   tbody.innerHTML = items.map(l => {
-    const info   = APP_LABELS[l.app] || { label: l.app, badgeClass: "" };
+    const info = APP_LABELS[l.app] || { label: l.app, badgeClass: "" };
     const status = l.status || "active";
     const expired = l.e !== "never" && new Date(l.e) < new Date() ? true : false;
     const statusBadge = status === "revoked"
@@ -475,7 +476,7 @@ function renderLicenses(filter = "") {
         <td><span class="badge ${info.badgeClass}">${info.label}</span></td>
         <td>${escHtml(l.d || "")}</td>
         <td>${l.e}</td>
-        <td>${(l.m||["*"]).join(", ")}</td>
+        <td>${(l.m || ["*"]).join(", ")}</td>
         <td>${l.n}</td>
         <td>${statusBadge}</td>
         <td>${revokedCell}</td>
@@ -566,7 +567,7 @@ function showAlert(id, msg, type) {
 }
 
 function escHtml(s) {
-  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
 
 function escAttr(s) {

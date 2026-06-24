@@ -1,331 +1,389 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Teemox License Admin</title>
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
 
-<!-- ── Login Screen ─────────────────────────────────────────────────────── -->
-<div id="loginScreen">
-  <div class="login-card">
-    <div class="logo">🔐</div>
-    <h2>Teemox License Portal</h2>
-    <p>Enter your GitHub Personal Access Token to manage licenses.<br>
-       Requires <code>repo</code> + <code>workflow</code> scopes.<br>
-       <a href="https://github.com/settings/tokens/new?scopes=repo,workflow&description=Teemox+License+Admin" target="_blank">Create token ↗</a>
-    </p>
-    <div id="loginAlert"></div>
-    <div class="form-group" style="margin-bottom:.75rem">
-      <label for="tokenInput">GitHub Personal Access Token</label>
-      <input type="password" id="tokenInput" placeholder="ghp_..." autocomplete="off"
-             onkeydown="if(event.key==='Enter') login()" />
-    </div>
-    <button class="btn btn-primary" style="width:100%" onclick="login()">Sign in with GitHub</button>
-    <p class="text-muted" style="margin-top:.75rem;font-size:.78rem">
-      Your token is stored only in sessionStorage and never transmitted to any third-party server.
-    </p>
-  </div>
-</div>
-
-<!-- ── App Shell ─────────────────────────────────────────────────────────── -->
-<div id="appShell" class="hidden">
-  <div class="topbar">
-    <h1>🔐 Teemox License Portal <span>Admin</span></h1>
-    <div style="display:flex;align-items:center;gap:1rem">
-      <span id="userInfo"></span>
-      <button class="btn btn-outline btn-sm" style="color:#fff;border-color:rgba(255,255,255,.4)" onclick="logout()">Logout</button>
+  <!-- ── Login Screen ─────────────────────────────────────────────────────── -->
+  <div id="loginScreen">
+    <div class="login-card">
+      <div class="logo">🔐</div>
+      <h2>Teemox License Portal</h2>
+      <p>Enter your GitHub Personal Access Token to manage licenses.<br>
+        Requires <code>repo</code> + <code>workflow</code> scopes.<br>
+        <a href="https://github.com/settings/tokens/new?scopes=repo,workflow&description=Teemox+License+Admin"
+          target="_blank">Create token ↗</a>
+      </p>
+      <div id="loginAlert"></div>
+      <div class="form-group" style="margin-bottom:.75rem">
+        <label for="tokenInput">GitHub Personal Access Token</label>
+        <input type="password" id="tokenInput" placeholder="ghp_..." autocomplete="off"
+          onkeydown="if(event.key==='Enter') login()" />
+      </div>
+      <button class="btn btn-primary" style="width:100%" onclick="login()">Sign in with GitHub</button>
+      <p class="text-muted" style="margin-top:.75rem;font-size:.78rem">
+        Your token is stored only in sessionStorage and never transmitted to any third-party server.
+      </p>
     </div>
   </div>
 
-  <div class="app-layout">
-    <!-- Sidebar -->
-    <div class="sidebar">
-      <nav>
-        <a href="#" data-tab="dashboard" class="active" onclick="showTab('dashboard');return false;">
-          <span class="icon">📊</span><span>Dashboard</span>
-        </a>
-        <a href="#" data-tab="generate" onclick="showTab('generate');return false;">
-          <span class="icon">🔑</span><span>Generate</span>
-        </a>
-        <a href="#" data-tab="licenses" onclick="showTab('licenses');return false;">
-          <span class="icon">📋</span><span>Licenses</span>
-        </a>
-        <a href="#" data-tab="settings" onclick="showTab('settings');return false;">
-          <span class="icon">⚙️</span><span>Settings</span>
-        </a>
-      </nav>
+  <!-- ── App Shell ─────────────────────────────────────────────────────────── -->
+  <div id="appShell" class="hidden">
+    <div class="topbar">
+      <h1>🔐 Teemox License Portal <span>Admin</span></h1>
+      <div style="display:flex;align-items:center;gap:1rem">
+        <span id="userInfo"></span>
+        <button class="btn btn-outline btn-sm" style="color:#fff;border-color:rgba(255,255,255,.4)"
+          onclick="logout()">Logout</button>
+      </div>
     </div>
 
-    <!-- Main -->
-    <div class="main-content">
-
-      <!-- ── Dashboard ────────────────────────────────────────────────────── -->
-      <div id="tab-dashboard" class="tab-pane active">
-        <div class="page-title">Dashboard</div>
-        <div id="statsGrid" class="stats-grid"></div>
-        <p class="text-muted" id="lastSync"></p>
-
-        <div class="card" style="margin-top:1rem">
-          <h2>Quick Actions</h2>
-          <div class="flex">
-            <button class="btn btn-primary" onclick="showTab('generate')">🔑 Generate New License</button>
-            <button class="btn btn-outline" onclick="showTab('licenses')">📋 View All Licenses</button>
-            <a class="btn btn-outline" href="https://github.com/anupamnath/teemox_licensing/actions" target="_blank">⚡ GitHub Actions ↗</a>
-          </div>
-        </div>
-
-        <div class="card">
-          <h2>Supported Applications</h2>
-          <table>
-            <thead><tr><th>App ID</th><th>Name</th><th>License Prefix</th></tr></thead>
-            <tbody>
-              <tr><td class="mono">TEEMOX_MAILER</td><td>Teemox Mailer</td><td><code>TMXLIC.</code></td></tr>
-              <tr><td class="mono">INFOMANIAK_API</td><td>Infomaniak API</td><td><code>TMXLIC.</code></td></tr>
-              <tr><td class="mono">SHOPIFY_API</td><td>Shopify API</td><td><code>TMXLIC.</code></td></tr>
-            </tbody>
-          </table>
-        </div>
+    <div class="app-layout">
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <nav>
+          <a href="#" data-tab="dashboard" class="active" onclick="showTab('dashboard');return false;">
+            <span class="icon">📊</span><span>Dashboard</span>
+          </a>
+          <a href="#" data-tab="generate" onclick="showTab('generate');return false;">
+            <span class="icon">🔑</span><span>Generate</span>
+          </a>
+          <a href="#" data-tab="licenses" onclick="showTab('licenses');return false;">
+            <span class="icon">📋</span><span>Licenses</span>
+          </a>
+          <a href="#" data-tab="settings" onclick="showTab('settings');return false;">
+            <span class="icon">⚙️</span><span>Settings</span>
+          </a>
+        </nav>
       </div>
 
-      <!-- ── Generate ─────────────────────────────────────────────────────── -->
-      <div id="tab-generate" class="tab-pane">
-        <div class="page-title">Generate License</div>
+      <!-- Main -->
+      <div class="main-content">
 
-        <div class="card gen-card">
-          <div class="gen-card-header">
-            <span class="hdr-icon">🔑</span>
-            <div>
-              <h2>Generate License Key</h2>
-              <p>Fill in the details to generate a signed license via GitHub Actions.</p>
+        <!-- ── Dashboard ────────────────────────────────────────────────────── -->
+        <div id="tab-dashboard" class="tab-pane active">
+          <div class="page-title">Dashboard</div>
+          <div id="statsGrid" class="stats-grid"></div>
+          <p class="text-muted" id="lastSync"></p>
+
+          <div class="card" style="margin-top:1rem">
+            <h2>Quick Actions</h2>
+            <div class="flex">
+              <button class="btn btn-primary" onclick="showTab('generate')">🔑 Generate New License</button>
+              <button class="btn btn-outline" onclick="showTab('licenses')">📋 View All Licenses</button>
+              <a class="btn btn-outline" href="https://github.com/anupamnath/teemox_licensing/actions" target="_blank">⚡
+                GitHub Actions ↗</a>
             </div>
           </div>
-          <form onsubmit="submitGenerate(event)">
-            <div class="form-grid">
-              <div class="form-section-label">👤 Customer Info</div>
-              <div class="form-group">
-                <label for="genApp">Application *</label>
-                <select id="genApp">
-                  <option value="TEEMOX_MAILER">Teemox Mailer</option>
-                  <option value="INFOMANIAK_API">Infomaniak API</option>
-                  <option value="SHOPIFY_API">Shopify API</option>
-                </select>
-              </div>
 
-              <div class="form-group">
-                <label for="genCustomer">Customer / Company *</label>
-                <input type="text" id="genCustomer" placeholder="Acme Corp" />
-              </div>
-
-              <div class="form-section-label">⏱️ License Validity</div>
-
-              <div class="form-group full">
-                <label>Expiry</label>
-                <div class="expiry-toggle-row">
-                  <label class="toggle-switch" title="Toggle lifetime / set expiry date">
-                    <input type="checkbox" id="genNever" checked onchange="toggleNever()" />
-                    <span class="toggle-track"></span>
-                  </label>
-                  <div class="expiry-toggle-text">
-                    <strong id="expiryToggleLabel">Lifetime License</strong>
-                    <span class="form-hint">License never expires — toggle to set a date</span>
-                  </div>
-                </div>
-                <div class="expiry-picker-wrap" id="expiryPickerWrap">
-                  <div class="datetime-row">
-                    <div class="datetime-field">
-                      <span class="dt-icon">📅</span>
-                      <input type="date" id="genExpiryDate" />
-                    </div>
-                    <div class="datetime-field">
-                      <span class="dt-icon">🕐</span>
-                      <input type="time" id="genExpiryTime" value="23:59" />
-                    </div>
-                  </div>
-                  <div class="quick-dates">
-                    <button type="button" class="quick-pill" onclick="setQuickDate(30)">30 days</button>
-                    <button type="button" class="quick-pill" onclick="setQuickDate(90)">3 months</button>
-                    <button type="button" class="quick-pill" onclick="setQuickDate(180)">6 months</button>
-                    <button type="button" class="quick-pill" onclick="setQuickDate(365)">1 year</button>
-                    <button type="button" class="quick-pill" onclick="setQuickDate(730)">2 years</button>
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-section-label">🔒 License Type</div>
-
-              <div class="form-group">
-                <label for="licenseType">License Type</label>
-                <select id="licenseType">
-                  <option value="machine">Machine-locked (recommended)</option>
-                  <option value="floating">Floating (any machine)</option>
-                </select>
-              </div>
-
-              <!-- Machine-locked section -->
-              <div id="machineSection" class="form-group full">
-                <label>Machine IDs</label>
-                <span class="form-hint">Customer finds their Machine ID in the app's activation screen.</span>
-                <div id="machineInputs" class="machine-list" style="margin-top:.4rem">
-                  <div class="machine-row">
-                    <input type="text" placeholder="16-char hex machine ID" maxlength="32" />
-                    <button type="button" class="btn btn-outline btn-sm" onclick="this.closest('.machine-row').remove()">✕</button>
-                  </div>
-                </div>
-                <button type="button" class="btn btn-ghost btn-sm" style="margin-top:.4rem;align-self:flex-start" onclick="addMachineRow()">+ Add machine</button>
-              </div>
-
-              <!-- Floating section -->
-              <div id="floatingSection" class="form-group hidden">
-                <label for="genMaxMachines">Max Simultaneous Machines</label>
-                <select id="genMaxMachines">
-                  <option>1</option><option>2</option><option>3</option>
-                  <option>4</option><option>5</option><option>6</option>
-                  <option>7</option><option>8</option><option>9</option>
-                  <option>10</option>
-                </select>
-                <span class="form-hint">Sync with server enforces the limit</span>
-              </div>
-
-              <div class="form-section-label">⚙️ Advanced Settings</div>
-
-              <div class="form-group">
-                <label for="genSyncInterval">Sync Interval (minutes)</label>
-                <input type="number" id="genSyncInterval" value="90" min="30" max="1440" />
-                <span class="form-hint">Min 30. How often the app validates online.</span>
-              </div>
-
-              <div class="form-group">
-                <label for="genGrace">Offline Grace Period (hours)</label>
-                <input type="number" id="genGrace" value="24" min="1" max="720" />
-                <span class="form-hint">App works offline for this many hours after last sync.</span>
-              </div>
-
-              <div class="form-group full">
-                <label for="genNotes">Internal Notes (not in key)</label>
-                <textarea id="genNotes" placeholder="Invoice #, Slack, purchase date, etc."></textarea>
-              </div>
-            </div>
-
-            <div class="gen-submit-row">
-              <button type="submit" class="btn btn-primary btn-lg" id="genBtn">🔑 Generate License</button>
-              <span class="form-hint">Triggers a GitHub Actions workflow to sign and store the license.</span>
-            </div>
-          </form>
-        </div>
-
-        <div id="genResult"></div>
-      </div>
-
-      <!-- ── Licenses ──────────────────────────────────────────────────────── -->
-      <div id="tab-licenses" class="tab-pane">
-        <div class="flex-between" style="margin-bottom:1rem">
-          <div class="page-title" style="margin-bottom:0">All Licenses</div>
-          <button class="btn btn-outline btn-sm" onclick="loadLicenses()">⟳ Refresh</button>
-        </div>
-
-        <div id="licAlert" class="hidden"></div>
-
-        <div class="search-bar">
-          <input type="search" id="licFilter" placeholder="Search by customer, app, or ID…" oninput="filterLicenses()" />
-          <select id="appFilter" onchange="filterLicenses()" style="max-width:160px">
-            <option value="">All apps</option>
-            <option value="teemox_mailer">Teemox Mailer</option>
-            <option value="infomaniak_api">Infomaniak API</option>
-            <option value="shopify_api">Shopify API</option>
-          </select>
-        </div>
-
-        <div class="card" style="padding:0">
-          <div class="table-wrap">
+          <div class="card">
+            <h2>Supported Applications</h2>
             <table>
               <thead>
                 <tr>
-                  <th>ID</th>
-                  <th>App</th>
-                  <th>Customer</th>
-                  <th>Expires</th>
-                  <th>Machines</th>
-                  <th>Max</th>
-                  <th>Status</th>
-                  <th>Revoked</th>
-                  <th>Actions</th>
+                  <th>App ID</th>
+                  <th>Name</th>
+                  <th>License Prefix</th>
                 </tr>
               </thead>
-              <tbody id="licensesTbody">
-                <tr><td colspan="9" class="text-muted">Click "Licenses" to load…</td></tr>
+              <tbody>
+                <tr>
+                  <td class="mono">TEEMOX_MAILER</td>
+                  <td>Teemox Mailer</td>
+                  <td><code>TMXLIC.</code></td>
+                </tr>
+                <tr>
+                  <td class="mono">INFOMANIAK_API</td>
+                  <td>Infomaniak API</td>
+                  <td><code>TMXLIC.</code></td>
+                </tr>
+                <tr>
+                  <td class="mono">SHOPIFY_API</td>
+                  <td>Shopify API</td>
+                  <td><code>TMXLIC.</code></td>
+                </tr>
+                <tr>
+                  <td class="mono">ZOHO_CALENDAR</td>
+                  <td>Zoho Calendar Bulk</td>
+                  <td><code>TMXLIC.</code></td>
+                </tr>
               </tbody>
             </table>
           </div>
         </div>
-      </div>
 
-      <!-- ── Settings ─────────────────────────────────────────────────────── -->
-      <div id="tab-settings" class="tab-pane">
-        <div class="page-title">Settings</div>
+        <!-- ── Generate ─────────────────────────────────────────────────────── -->
+        <div id="tab-generate" class="tab-pane">
+          <div class="page-title">Generate License</div>
 
-        <div class="card">
-          <h2>Repository Configuration</h2>
-          <table>
-            <tr><td><strong>Owner</strong></td><td class="mono">anupamnath</td></tr>
-            <tr><td><strong>Repo</strong></td><td class="mono">teemox_licensing</td></tr>
-            <tr><td><strong>Branch</strong></td><td class="mono">main</td></tr>
-            <tr><td><strong>Revocation URL</strong></td><td class="mono" style="font-size:.78rem">
-              https://raw.githubusercontent.com/anupamnath/teemox_licensing/main/public/valid_licenses.json
-            </td></tr>
-          </table>
-          <div class="mt2">
-            <a class="btn btn-outline btn-sm" href="https://github.com/anupamnath/teemox_licensing" target="_blank">Open Repository ↗</a>
-            <a class="btn btn-outline btn-sm" href="https://github.com/anupamnath/teemox_licensing/actions" target="_blank">View Actions ↗</a>
-            <a class="btn btn-outline btn-sm" href="https://github.com/anupamnath/teemox_licensing/settings/secrets/actions" target="_blank">Manage Secrets ↗</a>
+          <div class="card gen-card">
+            <div class="gen-card-header">
+              <span class="hdr-icon">🔑</span>
+              <div>
+                <h2>Generate License Key</h2>
+                <p>Fill in the details to generate a signed license via GitHub Actions.</p>
+              </div>
+            </div>
+            <form onsubmit="submitGenerate(event)">
+              <div class="form-grid">
+                <div class="form-section-label">👤 Customer Info</div>
+                <div class="form-group">
+                  <label for="genApp">Application *</label>
+                  <select id="genApp">
+                    <option value="TEEMOX_MAILER">Teemox Mailer</option>
+                    <option value="INFOMANIAK_API">Infomaniak API</option>
+                    <option value="SHOPIFY_API">Shopify API</option>
+                    <option value="ZOHO_CALENDAR">Zoho Calendar Bulk</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="genCustomer">Customer / Company *</label>
+                  <input type="text" id="genCustomer" placeholder="Acme Corp" />
+                </div>
+
+                <div class="form-section-label">⏱️ License Validity</div>
+
+                <div class="form-group full">
+                  <label>Expiry</label>
+                  <div class="expiry-toggle-row">
+                    <label class="toggle-switch" title="Toggle lifetime / set expiry date">
+                      <input type="checkbox" id="genNever" checked onchange="toggleNever()" />
+                      <span class="toggle-track"></span>
+                    </label>
+                    <div class="expiry-toggle-text">
+                      <strong id="expiryToggleLabel">Lifetime License</strong>
+                      <span class="form-hint">License never expires — toggle to set a date</span>
+                    </div>
+                  </div>
+                  <div class="expiry-picker-wrap" id="expiryPickerWrap">
+                    <div class="datetime-row">
+                      <div class="datetime-field">
+                        <span class="dt-icon">📅</span>
+                        <input type="date" id="genExpiryDate" />
+                      </div>
+                      <div class="datetime-field">
+                        <span class="dt-icon">🕐</span>
+                        <input type="time" id="genExpiryTime" value="23:59" />
+                      </div>
+                    </div>
+                    <div class="quick-dates">
+                      <button type="button" class="quick-pill" onclick="setQuickDate(30)">30 days</button>
+                      <button type="button" class="quick-pill" onclick="setQuickDate(90)">3 months</button>
+                      <button type="button" class="quick-pill" onclick="setQuickDate(180)">6 months</button>
+                      <button type="button" class="quick-pill" onclick="setQuickDate(365)">1 year</button>
+                      <button type="button" class="quick-pill" onclick="setQuickDate(730)">2 years</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-section-label">🔒 License Type</div>
+
+                <div class="form-group">
+                  <label for="licenseType">License Type</label>
+                  <select id="licenseType">
+                    <option value="machine">Machine-locked (recommended)</option>
+                    <option value="floating">Floating (any machine)</option>
+                  </select>
+                </div>
+
+                <!-- Machine-locked section -->
+                <div id="machineSection" class="form-group full">
+                  <label>Machine IDs</label>
+                  <span class="form-hint">Customer finds their Machine ID in the app's activation screen.</span>
+                  <div id="machineInputs" class="machine-list" style="margin-top:.4rem">
+                    <div class="machine-row">
+                      <input type="text" placeholder="16-char hex machine ID" maxlength="32" />
+                      <button type="button" class="btn btn-outline btn-sm"
+                        onclick="this.closest('.machine-row').remove()">✕</button>
+                    </div>
+                  </div>
+                  <button type="button" class="btn btn-ghost btn-sm" style="margin-top:.4rem;align-self:flex-start"
+                    onclick="addMachineRow()">+ Add machine</button>
+                </div>
+
+                <!-- Floating section -->
+                <div id="floatingSection" class="form-group hidden">
+                  <label for="genMaxMachines">Max Simultaneous Machines</label>
+                  <select id="genMaxMachines">
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                    <option>6</option>
+                    <option>7</option>
+                    <option>8</option>
+                    <option>9</option>
+                    <option>10</option>
+                  </select>
+                  <span class="form-hint">Sync with server enforces the limit</span>
+                </div>
+
+                <div class="form-section-label">⚙️ Advanced Settings</div>
+
+                <div class="form-group">
+                  <label for="genSyncInterval">Sync Interval (minutes)</label>
+                  <input type="number" id="genSyncInterval" value="90" min="30" max="1440" />
+                  <span class="form-hint">Min 30. How often the app validates online.</span>
+                </div>
+
+                <div class="form-group">
+                  <label for="genGrace">Offline Grace Period (hours)</label>
+                  <input type="number" id="genGrace" value="24" min="1" max="720" />
+                  <span class="form-hint">App works offline for this many hours after last sync.</span>
+                </div>
+
+                <div class="form-group full">
+                  <label for="genNotes">Internal Notes (not in key)</label>
+                  <textarea id="genNotes" placeholder="Invoice #, Slack, purchase date, etc."></textarea>
+                </div>
+              </div>
+
+              <div class="gen-submit-row">
+                <button type="submit" class="btn btn-primary btn-lg" id="genBtn">🔑 Generate License</button>
+                <span class="form-hint">Triggers a GitHub Actions workflow to sign and store the license.</span>
+              </div>
+            </form>
+          </div>
+
+          <div id="genResult"></div>
+        </div>
+
+        <!-- ── Licenses ──────────────────────────────────────────────────────── -->
+        <div id="tab-licenses" class="tab-pane">
+          <div class="flex-between" style="margin-bottom:1rem">
+            <div class="page-title" style="margin-bottom:0">All Licenses</div>
+            <button class="btn btn-outline btn-sm" onclick="loadLicenses()">⟳ Refresh</button>
+          </div>
+
+          <div id="licAlert" class="hidden"></div>
+
+          <div class="search-bar">
+            <input type="search" id="licFilter" placeholder="Search by customer, app, or ID…"
+              oninput="filterLicenses()" />
+            <select id="appFilter" onchange="filterLicenses()" style="max-width:160px">
+              <option value="">All apps</option>
+              <option value="teemox_mailer">Teemox Mailer</option>
+              <option value="infomaniak_api">Infomaniak API</option>
+              <option value="shopify_api">Shopify API</option>
+            </select>
+          </div>
+
+          <div class="card" style="padding:0">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>App</th>
+                    <th>Customer</th>
+                    <th>Expires</th>
+                    <th>Machines</th>
+                    <th>Max</th>
+                    <th>Status</th>
+                    <th>Revoked</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="licensesTbody">
+                  <tr>
+                    <td colspan="9" class="text-muted">Click "Licenses" to load…</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
 
-        <div class="card">
-          <h2>Client SDK Integration</h2>
-          <p class="text-muted" style="margin-bottom:.75rem">
-            Each app embeds <code>client_sdk/license_core.py</code> from this repo.
-            Set the constants at the top of the file for each app:
-          </p>
-          <div class="key-box" id="sdkConfigBox">APP_NAME     = "TEEMOX_MAILER"   # or INFOMANIAK_API / SHOPIFY_API
-APP_DIR_NAME = "TeemoxMailer"    # %APPDATA% subdirectory
-GITHUB_OWNER = "anupamnath"
-GITHUB_REPO  = "teemox_licensing"
-          <button class="btn btn-outline btn-sm copy-btn" onclick="copyKey('sdkConfigBox')">Copy</button>
+        <!-- ── Settings ─────────────────────────────────────────────────────── -->
+        <div id="tab-settings" class="tab-pane">
+          <div class="page-title">Settings</div>
+
+          <div class="card">
+            <h2>Repository Configuration</h2>
+            <table>
+              <tr>
+                <td><strong>Owner</strong></td>
+                <td class="mono">anupamnath</td>
+              </tr>
+              <tr>
+                <td><strong>Repo</strong></td>
+                <td class="mono">teemox_licensing</td>
+              </tr>
+              <tr>
+                <td><strong>Branch</strong></td>
+                <td class="mono">main</td>
+              </tr>
+              <tr>
+                <td><strong>Revocation URL</strong></td>
+                <td class="mono" style="font-size:.78rem">
+                  https://raw.githubusercontent.com/anupamnath/teemox_licensing/main/public/valid_licenses.json
+                </td>
+              </tr>
+            </table>
+            <div class="mt2">
+              <a class="btn btn-outline btn-sm" href="https://github.com/anupamnath/teemox_licensing"
+                target="_blank">Open Repository ↗</a>
+              <a class="btn btn-outline btn-sm" href="https://github.com/anupamnath/teemox_licensing/actions"
+                target="_blank">View Actions ↗</a>
+              <a class="btn btn-outline btn-sm"
+                href="https://github.com/anupamnath/teemox_licensing/settings/secrets/actions" target="_blank">Manage
+                Secrets ↗</a>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Client SDK Integration</h2>
+            <p class="text-muted" style="margin-bottom:.75rem">
+              Each app embeds <code>client_sdk/license_core.py</code> from this repo.
+              Set the constants at the top of the file for each app:
+            </p>
+            <div class="key-box" id="sdkConfigBox">APP_NAME = "TEEMOX_MAILER" # or INFOMANIAK_API / SHOPIFY_API
+              APP_DIR_NAME = "TeemoxMailer" # %APPDATA% subdirectory
+              GITHUB_OWNER = "anupamnath"
+              GITHUB_REPO = "teemox_licensing"
+              <button class="btn btn-outline btn-sm copy-btn" onclick="copyKey('sdkConfigBox')">Copy</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Security Checklist</h2>
+            <ul style="padding-left:1.25rem;line-height:2">
+              <li>✅ Ed25519 private key stored ONLY in GitHub Actions Secret (<code>LICENSE_PRIVATE_KEY_PEM</code>)</li>
+              <li>✅ Public key embedded in each app binary — tamper-evident</li>
+              <li>✅ Machine-locked licenses prevent key sharing</li>
+              <li>✅ Revocation list at <code>public/valid_licenses.json</code> enforced on every sync</li>
+              <li>✅ Encrypted local sync cache with anti-rollback (clock manipulation protection)</li>
+              <li>✅ Grace period prevents abuse of offline mode</li>
+              <li>✅ PAT never leaves your browser (sessionStorage only)</li>
+            </ul>
           </div>
         </div>
 
-        <div class="card">
-          <h2>Security Checklist</h2>
-          <ul style="padding-left:1.25rem;line-height:2">
-            <li>✅ Ed25519 private key stored ONLY in GitHub Actions Secret (<code>LICENSE_PRIVATE_KEY_PEM</code>)</li>
-            <li>✅ Public key embedded in each app binary — tamper-evident</li>
-            <li>✅ Machine-locked licenses prevent key sharing</li>
-            <li>✅ Revocation list at <code>public/valid_licenses.json</code> enforced on every sync</li>
-            <li>✅ Encrypted local sync cache with anti-rollback (clock manipulation protection)</li>
-            <li>✅ Grace period prevents abuse of offline mode</li>
-            <li>✅ PAT never leaves your browser (sessionStorage only)</li>
-          </ul>
-        </div>
+      </div><!-- /main-content -->
+    </div><!-- /app-layout -->
+  </div><!-- /appShell -->
+
+  <!-- ── Key Modal ─────────────────────────────────────────────────────────── -->
+  <div id="modal" class="hidden"
+    style="position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:999;display:flex;align-items:center;justify-content:center;">
+    <div class="card" style="width:min(640px,90vw);max-height:80vh;overflow:auto;position:relative">
+      <div class="flex-between" style="margin-bottom:.75rem">
+        <strong id="modalTitle"></strong>
+        <button class="btn btn-ghost btn-sm" onclick="closeModal()">✕ Close</button>
       </div>
-
-    </div><!-- /main-content -->
-  </div><!-- /app-layout -->
-</div><!-- /appShell -->
-
-<!-- ── Key Modal ─────────────────────────────────────────────────────────── -->
-<div id="modal" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:999;display:flex;align-items:center;justify-content:center;">
-  <div class="card" style="width:min(640px,90vw);max-height:80vh;overflow:auto;position:relative">
-    <div class="flex-between" style="margin-bottom:.75rem">
-      <strong id="modalTitle"></strong>
-      <button class="btn btn-ghost btn-sm" onclick="closeModal()">✕ Close</button>
+      <div id="modalBody"></div>
     </div>
-    <div id="modalBody"></div>
   </div>
-</div>
 
-<script src="app.js?v=4"></script>
+  <script src="app.js?v=4"></script>
 </body>
+
 </html>
