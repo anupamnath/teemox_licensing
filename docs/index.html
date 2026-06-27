@@ -113,6 +113,11 @@
                   <td>Zoho Calendar Bulk</td>
                   <td><code>TMXLIC.</code></td>
                 </tr>
+                <tr>
+                  <td class="mono">ZOHO_INVOICE</td>
+                  <td>Zoho Invoice Bulk</td>
+                  <td><code>TMXLIC.</code></td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -140,6 +145,7 @@
                     <option value="INFOMANIAK_API">Infomaniak API</option>
                     <option value="SHOPIFY_API">Shopify API</option>
                     <option value="ZOHO_CALENDAR">Zoho Calendar Bulk</option>
+                    <option value="ZOHO_INVOICE">Zoho Invoice Bulk</option>
                   </select>
                 </div>
 
@@ -268,11 +274,13 @@
           <div class="search-bar">
             <input type="search" id="licFilter" placeholder="Search by customer, app, or ID…"
               oninput="filterLicenses()" />
-            <select id="appFilter" onchange="filterLicenses()" style="max-width:160px">
+              <select id="appFilter" onchange="filterLicenses()" style="max-width:160px">
               <option value="">All apps</option>
               <option value="teemox_mailer">Teemox Mailer</option>
               <option value="infomaniak_api">Infomaniak API</option>
               <option value="shopify_api">Shopify API</option>
+              <option value="zoho_calendar">Zoho Calendar Bulk</option>
+              <option value="zoho_invoice">Zoho Invoice Bulk</option>
             </select>
           </div>
 
@@ -345,7 +353,7 @@
               Each app embeds <code>client_sdk/license_core.py</code> from this repo.
               Set the constants at the top of the file for each app:
             </p>
-            <div class="key-box" id="sdkConfigBox">APP_NAME = "TEEMOX_MAILER" # or INFOMANIAK_API / SHOPIFY_API
+            <div class="key-box" id="sdkConfigBox">APP_NAME = "TEEMOX_MAILER" # or INFOMANIAK_API / SHOPIFY_API / ZOHO_CALENDAR / ZOHO_INVOICE
               APP_DIR_NAME = "TeemoxMailer" # %APPDATA% subdirectory
               GITHUB_OWNER = "anupamnath"
               GITHUB_REPO = "teemox_licensing"

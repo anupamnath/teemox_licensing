@@ -12,6 +12,7 @@ on:
           - INFOMANIAK_API
           - SHOPIFY_API
           - ZOHO_CALENDAR
+          - ZOHO_INVOICE
       display_name:
         description: "Customer / company name"
         required: true
@@ -75,6 +76,7 @@ jobs:
           TEEMOX_MAILER_PRIVATE_KEY:    ${{ secrets.TEEMOX_MAILER_PRIVATE_KEY }}
           INFOMANIAK_API_PRIVATE_KEY:   ${{ secrets.INFOMANIAK_API_PRIVATE_KEY }}
           ZOHO_CALENDAR_PRIVATE_KEY:    ${{ secrets.ZOHO_CALENDAR_PRIVATE_KEY }}
+          ZOHO_INVOICE_PRIVATE_KEY:     ${{ secrets.ZOHO_INVOICE_PRIVATE_KEY }}
           LICENSE_PRIVATE_KEY_PEM:      ${{ secrets.LICENSE_PRIVATE_KEY_PEM }}
         run: |
           OUTPUT=$(python scripts/generate_license.py \

@@ -17,6 +17,7 @@ const APP_LABELS = {
   INFOMANIAK_API: { label: "Infomaniak API", badgeClass: "badge-inf" },
   SHOPIFY_API: { label: "Shopify API", badgeClass: "badge-sho" },
   ZOHO_CALENDAR: { label: "Zoho Calendar Bulk", badgeClass: "badge-zoh" },
+  ZOHO_INVOICE: { label: "Zoho Invoice Bulk", badgeClass: "badge-zoh" },
 };
 
 // ── State ─────────────────────────────────────────────────────────────────────

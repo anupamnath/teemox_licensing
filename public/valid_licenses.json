@@ -41,5 +41,10 @@
     "revoked_at": {
       "6f28f078372d4ce68f529367aef6dcdf": "2026-06-24T13:54:18.326401+00:00"
     }
+  },
+  "ZOHO_INVOICE": {
+    "valid": [],
+    "revoked": [],
+    "revoked_at": {}
   }
 }
