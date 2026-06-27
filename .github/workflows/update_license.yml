@@ -72,7 +72,12 @@ jobs:
       - name: Update license
         id: update
         env:
-          LICENSE_PRIVATE_KEY_PEM: ${{ secrets.LICENSE_PRIVATE_KEY_PEM }}
+          SHOPIFY_API_PRIVATE_KEY:      ${{ secrets.SHOPIFY_API_PRIVATE_KEY }}
+          TEEMOX_MAILER_PRIVATE_KEY:    ${{ secrets.TEEMOX_MAILER_PRIVATE_KEY }}
+          INFOMANIAK_API_PRIVATE_KEY:   ${{ secrets.INFOMANIAK_API_PRIVATE_KEY }}
+          ZOHO_CALENDAR_PRIVATE_KEY:    ${{ secrets.ZOHO_CALENDAR_PRIVATE_KEY }}
+          ZOHO_INVOICE_PRIVATE_KEY:     ${{ secrets.ZOHO_INVOICE_PRIVATE_KEY }}
+          LICENSE_PRIVATE_KEY_PEM:      ${{ secrets.LICENSE_PRIVATE_KEY_PEM }}
         run: |
           OUTPUT=$(python scripts/update_license.py \
             --id               "${{ github.event.inputs.license_id }}" \
