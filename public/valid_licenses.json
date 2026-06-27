@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-26T03:13:43.943894+00:00",
+  "updated_at": "2026-06-27T03:12:04.743462+00:00",
   "schema_version": 1,
   "TEEMOX_MAILER": {
     "valid": [
@@ -19,11 +19,14 @@
       "022663cc6f2f44e0b06f2a888340764a",
       "95d0d3eeacd3415a820c411503ed3209",
       "147556482c21456eb4c08e5c91887f10",
-      "9af37d7022094dae86855c7b5f48f0bf",
       "981f9ad1e69e45cdb555ca632c7fb8fc"
     ],
-    "revoked": [],
-    "revoked_at": {}
+    "revoked": [
+      "9af37d7022094dae86855c7b5f48f0bf"
+    ],
+    "revoked_at": {
+      "9af37d7022094dae86855c7b5f48f0bf": "2026-06-27T03:12:04.742573+00:00"
+    }
   },
   "ZOHO_CALENDAR": {
     "valid": [
