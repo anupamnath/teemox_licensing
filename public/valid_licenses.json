@@ -1,12 +1,13 @@
 {
-  "updated_at": "2026-07-13T17:52:00.338254+00:00",
+  "updated_at": "2026-07-13T19:27:53.660478+00:00",
   "schema_version": 1,
   "TEEMOX_MAILER": {
     "valid": [
       "08e4c077d8774ee3b82fbab88c653b7d",
       "7ce1c8ad24344a5ab6c1cd0548865cd9",
       "9214e035b7904a3d8dfeae75d9f51245",
-      "ac7e9d0a7c744b5aa9e43fbc3acba529"
+      "ac7e9d0a7c744b5aa9e43fbc3acba529",
+      "b3e79e4c7f2944dfb74f328073c1589a"
     ],
     "revoked": [],
     "revoked_at": {}
