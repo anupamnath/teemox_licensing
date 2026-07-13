@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-07-13T21:16:58.104142+00:00",
+  "updated_at": "2026-07-13T21:21:11.242726+00:00",
   "schema_version": 1,
   "TEEMOX_MAILER": {
     "valid": [
@@ -46,7 +46,8 @@
   "ZOHO_INVOICE": {
     "valid": [
       "dddadfcdab814414ab15223a259ca59a",
-      "628756ff837d4f18a99703176484555f"
+      "628756ff837d4f18a99703176484555f",
+      "43513dba53af4af9b8ebeeb06aa01e31"
     ],
     "revoked": [],
     "revoked_at": {}
