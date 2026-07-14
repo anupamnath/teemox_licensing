@@ -415,6 +415,7 @@ textarea { resize: vertical; min-height: 70px; }
 .badge-tmx     { background: #ede9fe; color: #6d28d9; }
 .badge-inf     { background: #dbeafe; color: #1d4ed8; }
 .badge-sho     { background: #d1fae5; color: #065f46; }
+.badge-hig     { background: #fce7f3; color: #be185d; }
 
 /* ── Tables ──────────────────────────────────────────────────────────────── */
 .table-wrap { overflow-x: auto; }

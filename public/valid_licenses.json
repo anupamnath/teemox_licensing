@@ -53,5 +53,10 @@
     ],
     "revoked": [],
     "revoked_at": {}
+  },
+  "HIGHTAIL_MAILER": {
+    "valid": [],
+    "revoked": [],
+    "revoked_at": {}
   }
 }

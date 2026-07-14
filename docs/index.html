@@ -39,8 +39,7 @@
       <h1>🔐 Teemox License Portal <span>Admin</span></h1>
       <div style="display:flex;align-items:center;gap:1rem">
         <span id="userInfo"></span>
-        <button class="btn btn-outline btn-sm" style="color:#fff;border-color:rgba(255,255,255,.4)"
-          onclick="logout()">Logout</button>
+        <button class="btn btn-outline btn-sm" style="color:#fff;border-color:rgba(255,255,255,.4)" onclick="logout()">Logout</button>
       </div>
     </div>
 
@@ -77,47 +76,21 @@
             <div class="flex">
               <button class="btn btn-primary" onclick="showTab('generate')">🔑 Generate New License</button>
               <button class="btn btn-outline" onclick="showTab('licenses')">📋 View All Licenses</button>
-              <a class="btn btn-outline" href="https://github.com/anupamnath/teemox_licensing/actions" target="_blank">⚡
-                GitHub Actions ↗</a>
+              <a class="btn btn-outline" href="https://github.com/anupamnath/teemox_licensing/actions" target="_blank">⚡ GitHub Actions ↗</a>
             </div>
           </div>
 
           <div class="card">
             <h2>Supported Applications</h2>
             <table>
-              <thead>
-                <tr>
-                  <th>App ID</th>
-                  <th>Name</th>
-                  <th>License Prefix</th>
-                </tr>
-              </thead>
+              <thead><tr><th>App ID</th><th>Name</th><th>License Prefix</th></tr></thead>
               <tbody>
-                <tr>
-                  <td class="mono">TEEMOX_MAILER</td>
-                  <td>Teemox Mailer</td>
-                  <td><code>TMXLIC.</code></td>
-                </tr>
-                <tr>
-                  <td class="mono">INFOMANIAK_API</td>
-                  <td>Infomaniak API</td>
-                  <td><code>TMXLIC.</code></td>
-                </tr>
-                <tr>
-                  <td class="mono">SHOPIFY_API</td>
-                  <td>Shopify API</td>
-                  <td><code>TMXLIC.</code></td>
-                </tr>
-                <tr>
-                  <td class="mono">ZOHO_CALENDAR</td>
-                  <td>Zoho Calendar Bulk</td>
-                  <td><code>TMXLIC.</code></td>
-                </tr>
-                <tr>
-                  <td class="mono">ZOHO_INVOICE</td>
-                  <td>Zoho Invoice Bulk</td>
-                  <td><code>TMXLIC.</code></td>
-                </tr>
+                <tr><td class="mono">TEEMOX_MAILER</td><td>Teemox Mailer</td><td><code>TMXLIC.</code></td></tr>
+                <tr><td class="mono">INFOMANIAK_API</td><td>Infomaniak API</td><td><code>TMXLIC.</code></td></tr>
+                <tr><td class="mono">SHOPIFY_API</td><td>Shopify API</td><td><code>TMXLIC.</code></td></tr>
+                <tr><td class="mono">ZOHO_CALENDAR</td><td>Zoho Calendar Bulk</td><td><code>TMXLIC.</code></td></tr>
+                <tr><td class="mono">ZOHO_INVOICE</td><td>Zoho Invoice Bulk</td><td><code>TMXLIC.</code></td></tr>
+                <tr><td class="mono">HIGHTAIL_MAILER</td><td>Hightail Mailer</td><td><code>TMXLIC.</code></td></tr>
               </tbody>
             </table>
           </div>
@@ -146,6 +119,7 @@
                     <option value="SHOPIFY_API">Shopify API</option>
                     <option value="ZOHO_CALENDAR">Zoho Calendar Bulk</option>
                     <option value="ZOHO_INVOICE">Zoho Invoice Bulk</option>
+                    <option value="HIGHTAIL_MAILER">Hightail Mailer</option>
                   </select>
                 </div>
 
@@ -274,13 +248,14 @@
           <div class="search-bar">
             <input type="search" id="licFilter" placeholder="Search by customer, app, or ID…"
               oninput="filterLicenses()" />
-              <select id="appFilter" onchange="filterLicenses()" style="max-width:160px">
+            <select id="appFilter" onchange="filterLicenses()" style="max-width:160px">
               <option value="">All apps</option>
               <option value="teemox_mailer">Teemox Mailer</option>
               <option value="infomaniak_api">Infomaniak API</option>
               <option value="shopify_api">Shopify API</option>
               <option value="zoho_calendar">Zoho Calendar Bulk</option>
               <option value="zoho_invoice">Zoho Invoice Bulk</option>
+              <option value="hightail_mailer">Hightail Mailer</option>
             </select>
           </div>
 
@@ -353,7 +328,7 @@
               Each app embeds <code>client_sdk/license_core.py</code> from this repo.
               Set the constants at the top of the file for each app:
             </p>
-            <div class="key-box" id="sdkConfigBox">APP_NAME = "TEEMOX_MAILER" # or INFOMANIAK_API / SHOPIFY_API / ZOHO_CALENDAR / ZOHO_INVOICE
+            <div class="key-box" id="sdkConfigBox">APP_NAME = "TEEMOX_MAILER" # or INFOMANIAK_API / SHOPIFY_API / ZOHO_CALENDAR / ZOHO_INVOICE / HIGHTAIL_MAILER
               APP_DIR_NAME = "TeemoxMailer" # %APPDATA% subdirectory
               GITHUB_OWNER = "anupamnath"
               GITHUB_REPO = "teemox_licensing"

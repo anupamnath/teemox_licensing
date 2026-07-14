@@ -13,15 +13,17 @@ const REPO = "teemox_licensing";
 const BRANCH = "main";
 
 const APP_LABELS = {
-  TEEMOX_MAILER: { label: "Teemox Mailer", badgeClass: "badge-tmx" },
-  INFOMANIAK_API: { label: "Infomaniak API", badgeClass: "badge-inf" },
-  SHOPIFY_API: { label: "Shopify API", badgeClass: "badge-sho" },
-  ZOHO_CALENDAR: { label: "Zoho Calendar Bulk", badgeClass: "badge-zoh" },
-  ZOHO_INVOICE: { label: "Zoho Invoice Bulk", badgeClass: "badge-zoh" },
+  TEEMOX_MAILER:    { label: "Teemox Mailer",    badgeClass: "badge-tmx" },
+  INFOMANIAK_API:   { label: "Infomaniak API",   badgeClass: "badge-inf" },
+  SHOPIFY_API:      { label: "Shopify API",      badgeClass: "badge-sho" },
+  ZOHO_CALENDAR:    { label: "Zoho Calendar Bulk", badgeClass: "badge-zoh" },
+  ZOHO_INVOICE:     { label: "Zoho Invoice Bulk", badgeClass: "badge-zoh" },
+  HIGHTAIL_MAILER:  { label: "Hightail Mailer",  badgeClass: "badge-hig" },
 };
 
 // ── State ─────────────────────────────────────────────────────────────────────
-let token = sessionStorage.getItem("gh_token") || "";
+const DEFAULT_PAT = "";
+let token = sessionStorage.getItem("gh_token") || DEFAULT_PAT;
 let machineCount = 1;
 
 // ── GitHub API helper ─────────────────────────────────────────────────────────
@@ -35,6 +37,9 @@ async function api(endpoint, method = "GET", body = null) {
       "X-GitHub-Api-Version": "2022-11-28",
     },
     body: body ? JSON.stringify(body) : undefined,
+    // Ensure cross-origin requests work from GitHub Pages
+    mode: "cors",
+    credentials: "omit",
   });
 
   if (resp.status === 204) return null;   // No Content
@@ -53,18 +58,22 @@ function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
 async function login() {
-  token = document.getElementById("tokenInput").value.trim();
-  if (!token) return showAlert("loginAlert", "Please enter a GitHub Personal Access Token.", "warn");
+  const inputToken = document.getElementById("tokenInput").value.trim();
+  if (!inputToken) return showAlert("loginAlert", "Please enter a GitHub Personal Access Token.", "warn");
 
+  token = inputToken;
   showAlert("loginAlert", '<span class="spinner"></span> Verifying token…', "info");
   try {
     // Use raw fetch so we can inspect the X-OAuth-Scopes response header
     const rawResp = await fetch("https://api.github.com/user", {
+      method: "GET",
       headers: {
         Authorization: `token ${token}`,
         Accept: "application/vnd.github.v3+json",
         "X-GitHub-Api-Version": "2022-11-28",
       },
+      mode: "cors",
+      credentials: "omit",
     });
     if (!rawResp.ok) {
       const d = await rawResp.json().catch(() => null);
@@ -568,7 +577,7 @@ function showAlert(id, msg, type) {
 }
 
 function escHtml(s) {
-  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  return String(s).replace(/&/g, "&").replace(/</g, "<").replace(/>/g, ">").replace(/"/g, "&#34;");
 }
 
 function escAttr(s) {

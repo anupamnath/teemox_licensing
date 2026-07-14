@@ -32,7 +32,7 @@ from cryptography.fernet import Fernet, InvalidToken
 from cryptography.hazmat.primitives.serialization import load_pem_public_key
 
 # ── Per-app constants (edit per deployment) ────────────────────────────────────
-APP_NAME     = "TEEMOX_MAILER"   # TEEMOX_MAILER | INFOMANIAK_API | SHOPIFY_API
+APP_NAME     = "TEEMOX_MAILER"   # TEEMOX_MAILER | INFOMANIAK_API | SHOPIFY_API | HIGHTAIL_MAILER
 APP_DIR_NAME = "TeemoxMailer"    # %APPDATA% subdirectory name
 
 GITHUB_OWNER = "anupamnath"

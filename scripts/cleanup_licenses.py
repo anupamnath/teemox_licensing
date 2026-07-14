@@ -20,7 +20,7 @@ LICENSES_DIR = REPO / "licenses"
 PUBLIC_DIR   = REPO / "public"
 REVOKE_GRACE_DAYS = 7   # delete records this many days after revocation
 
-APP_NAMES = {"TEEMOX_MAILER", "INFOMANIAK_API", "SHOPIFY_API"}
+APP_NAMES = {"TEEMOX_MAILER", "INFOMANIAK_API", "SHOPIFY_API", "HIGHTAIL_MAILER"}
 
 
 def load_valid(path: Path) -> dict:
@@ -35,6 +35,7 @@ def load_valid(path: Path) -> dict:
         "TEEMOX_MAILER":  {"valid": [], "revoked": [], "revoked_at": {}},
         "INFOMANIAK_API": {"valid": [], "revoked": [], "revoked_at": {}},
         "SHOPIFY_API":    {"valid": [], "revoked": [], "revoked_at": {}},
+        "HIGHTAIL_MAILER": {"valid": [], "revoked": [], "revoked_at": {}},
     }
 
 

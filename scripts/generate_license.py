@@ -44,6 +44,7 @@ def load_valid(path: Path) -> dict:
         "SHOPIFY_API":    {"valid": [], "revoked": [], "revoked_at": {}},
         "ZOHO_CALENDAR":  {"valid": [], "revoked": [], "revoked_at": {}},
         "ZOHO_INVOICE":   {"valid": [], "revoked": [], "revoked_at": {}},
+        "HIGHTAIL_MAILER":{"valid": [], "revoked": [], "revoked_at": {}},
     }
 
 
@@ -56,7 +57,8 @@ def save_valid(data: dict, path: Path) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Generate a Teemox license key")
-    parser.add_argument("--app",           required=True,  help="TEEMOX_MAILER | INFOMANIAK_API | SHOPIFY_API | ZOHO_CALENDAR | ZOHO_INVOICE")
+    parser.add_argument("--app",           required=True,
+                        help="TEEMOX_MAILER | INFOMANIAK_API | SHOPIFY_API | ZOHO_CALENDAR | ZOHO_INVOICE | HIGHTAIL_MAILER")
     parser.add_argument("--display",       required=True,  help="Customer / company name")
     parser.add_argument("--expiry",        default="never",help="YYYY-MM-DD or 'never'")
     parser.add_argument("--machines",      default="*",    help="Comma-separated machine IDs (or * for any)")
