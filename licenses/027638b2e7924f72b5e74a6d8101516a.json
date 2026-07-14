@@ -1,0 +1,19 @@
+{
+  "v": 4,
+  "id": "027638b2e7924f72b5e74a6d8101516a",
+  "app": "TEEMOX_MAILER",
+  "d": "teemox",
+  "e": "never",
+  "c": "2026-07-14",
+  "si": 90,
+  "m": [
+    "*"
+  ],
+  "n": 1,
+  "g": 24,
+  "key": "TMXLIC.eyJ2Ijo0LCJpZCI6IjAyNzYzOGIyZTc5MjRmNzJiNWU3NGE2ZDgxMDE1MTZhIiwiYXBwIjoiVEVFTU9YX01BSUxFUiIsImQiOiJ0ZWVtb3giLCJlIjoibmV2ZXIiLCJjIjoiMjAyNi0wNy0xNCIsInNpIjo5MCwibSI6WyIqIl0sIm4iOjEsImciOjI0fQ.UBMNutJ6RPotvCs44j8bj-K-UsVpnVWDvCG1UoDlQJkZTSeb8I4XTKHCrhxFECen6Kx2r3PGrxHy3fzT_R8CDA",
+  "notes": "",
+  "created_at": "2026-07-14T09:28:16.152117+00:00",
+  "history": [],
+  "status": "active"
+}
