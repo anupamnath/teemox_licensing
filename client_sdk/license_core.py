@@ -39,9 +39,10 @@ GITHUB_OWNER = "anupamnath"
 GITHUB_REPO  = "teemox_licensing"
 
 # Ed25519 public key — patched in by scripts/setup_keypair.py
+# NOTE: Each app has its own keypair. For SHOPIFY_API, use keys/shopify_api_pub.pem
 PUBLIC_KEY_PEM = """
 -----BEGIN PUBLIC KEY-----
-MCowBQYDK2VwAyEAsjl8haqUEVYfHsQpXG4KEM1kzKFXArpbeveO6zoY2R8=
+MCowBQYDK2VwAyEAGIDY1XRAic/aQGxuMirvnX6M0g67xRheQG0M1R8v+rc=
 -----END PUBLIC KEY-----
 """
 
