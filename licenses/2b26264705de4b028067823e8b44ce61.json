@@ -15,5 +15,7 @@
   "notes": "",
   "created_at": "2026-09-01T16:19:32.340695+00:00",
   "history": [],
-  "status": "active"
+  "status": "revoked",
+  "revoked_at": "2026-09-04T06:59:26.505973+00:00",
+  "revoke_reason": "Auto-revoked: license expired on 2026-09-03"
 }

@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-03T06:55:38.997704+00:00",
+  "updated_at": "2026-09-04T06:59:26.507359+00:00",
   "schema_version": 1,
   "TEEMOX_MAILER": {
     "valid": [
@@ -10,11 +10,14 @@
       "370bf09a60ae428ea23b58393cd3965b",
       "71502c0c9e5943ad9b3b395a86392798",
       "0b743bf4dca24c1c8ec2ee8a7f4a962c",
-      "027638b2e7924f72b5e74a6d8101516a",
+      "027638b2e7924f72b5e74a6d8101516a"
+    ],
+    "revoked": [
       "116a3f71552e4a8391c3a1792666d530"
     ],
-    "revoked": [],
-    "revoked_at": {}
+    "revoked_at": {
+      "116a3f71552e4a8391c3a1792666d530": "2026-09-04T06:59:26.505973+00:00"
+    }
   },
   "INFOMANIAK_API": {
     "valid": [],
@@ -28,11 +31,14 @@
       "95d0d3eeacd3415a820c411503ed3209",
       "147556482c21456eb4c08e5c91887f10",
       "981f9ad1e69e45cdb555ca632c7fb8fc",
-      "1c2d593c326444ecb160ca2d9a66e305",
+      "1c2d593c326444ecb160ca2d9a66e305"
+    ],
+    "revoked": [
       "2b26264705de4b028067823e8b44ce61"
     ],
-    "revoked": [],
-    "revoked_at": {}
+    "revoked_at": {
+      "2b26264705de4b028067823e8b44ce61": "2026-09-04T06:59:26.505973+00:00"
+    }
   },
   "ZOHO_CALENDAR": {
     "valid": [
